@@ -15,8 +15,11 @@ import React, { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { input } from "zod";
 
 type Props<T extends string> = {
+  searchValue: string;
+  onSearchValueChange: (input: string) => void;
   selectedValue: T;
   onSelectedValueChange: (value: T) => void;
   items: { value: T; label: string }[];
@@ -26,6 +29,8 @@ type Props<T extends string> = {
 };
 
 const AutocompleteInput = <T extends string>({
+  searchValue,
+  onSearchValueChange,
   selectedValue,
   onSelectedValueChange,
   items,
@@ -34,7 +39,6 @@ const AutocompleteInput = <T extends string>({
   placeholder = "Search...",
 }: Props<T>) => {
   const [open, setOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
 
   const labels = useMemo(
     () =>
@@ -50,7 +54,7 @@ const AutocompleteInput = <T extends string>({
 
   const reset = () => {
     onSelectedValueChange("" as T);
-    setSearchValue("");
+    onSearchValueChange("");
   };
 
   const onInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -67,7 +71,7 @@ const AutocompleteInput = <T extends string>({
       reset();
     } else {
       onSelectedValueChange(inputValue as T);
-      setSearchValue(labels[inputValue] ?? "");
+      onSearchValueChange(labels[inputValue] ?? "");
     }
     setOpen(false);
   };
@@ -80,7 +84,7 @@ const AutocompleteInput = <T extends string>({
             <CommandPrimitive.Input
               asChild
               value={searchValue}
-              onValueChange={setSearchValue}
+              onValueChange={onSearchValueChange}
               onKeyDown={(e) => setOpen(e.key !== "Escape")}
               onMouseDown={() => setOpen((open) => !!searchValue || !open)}
               onFocus={() => setOpen(true)}

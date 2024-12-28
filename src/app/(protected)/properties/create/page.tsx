@@ -3,6 +3,7 @@
 import AutocompleteInput from "@/app/_components/autocomplete-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import useDebounce from "@/hooks/use-debounce";
 import { api } from "@/trpc/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -31,7 +32,9 @@ type FormInput = {
 };
 
 const CreatePropertyPage = () => {
+  const [searchValue, setSearchValue] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
+  const debouncedSearchValue = useDebounce(searchValue);
 
   const { register, handleSubmit, reset } = useForm<FormInput>();
   const createProperty = api.property.createProperty.useMutation();
@@ -48,6 +51,12 @@ const CreatePropertyPage = () => {
     });
     return true;
   };
+
+  const { data } = api.googlePlaces.autocompleteSuggestions.useQuery({
+    searchInput: debouncedSearchValue,
+  });
+
+  console.log(data);
 
   return (
     <div className="flex h-full items-center justify-center gap-12">
@@ -67,6 +76,8 @@ const CreatePropertyPage = () => {
             <AutocompleteInput
               placeholder="Search..."
               items={items}
+              searchValue={searchValue}
+              onSearchValueChange={setSearchValue}
               selectedValue={selectedValue}
               onSelectedValueChange={setSelectedValue}
             />
