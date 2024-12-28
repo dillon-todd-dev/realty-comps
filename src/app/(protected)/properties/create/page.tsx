@@ -3,7 +3,10 @@
 import AutocompleteInput from "@/app/_components/autocomplete-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { api } from "@/trpc/react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 const items = [
   {
@@ -20,8 +23,31 @@ const items = [
   },
 ];
 
+type FormInput = {
+  streetAddress: string;
+  city: string;
+  state: string;
+  postalCode: string;
+};
+
 const CreatePropertyPage = () => {
   const [selectedValue, setSelectedValue] = useState("");
+
+  const { register, handleSubmit, reset } = useForm<FormInput>();
+  const createProperty = api.property.createProperty.useMutation();
+
+  const onSubmit = (data: FormInput) => {
+    createProperty.mutate(data, {
+      onSuccess: () => {
+        toast.success("Property added successfully");
+        reset();
+      },
+      onError: () => {
+        toast.error("Failed to add property");
+      },
+    });
+    return true;
+  };
 
   return (
     <div className="flex h-full items-center justify-center gap-12">
@@ -37,7 +63,7 @@ const CreatePropertyPage = () => {
         </div>
         <div className="h-4"></div>
         <div>
-          <form className="space-y-2">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
             <AutocompleteInput
               placeholder="Search..."
               items={items}
@@ -49,10 +75,18 @@ const CreatePropertyPage = () => {
               <h4 className="w-fit font-extralight">or</h4>
               <span className="w-full border-y"></span>
             </article>
-            <Input placeholder="Street Address" />
-            <Input placeholder="City" />
-            <Input placeholder="State" />
-            <Input placeholder="Postal Code" />
+            <Input
+              {...register("streetAddress")}
+              required
+              placeholder="Street Address"
+            />
+            <Input {...register("city")} required placeholder="City" />
+            <Input {...register("state")} required placeholder="State" />
+            <Input
+              {...register("postalCode")}
+              required
+              placeholder="Postal Code"
+            />
             <div className="h-2"></div>
             <Button type="submit">Add Property</Button>
           </form>
