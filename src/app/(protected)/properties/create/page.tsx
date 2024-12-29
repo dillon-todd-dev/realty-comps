@@ -5,24 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useDebounce from "@/hooks/use-debounce";
 import { api } from "@/trpc/react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
-
-const items = [
-  {
-    value: "test-1",
-    label: "Test 1",
-  },
-  {
-    value: "test-2",
-    label: "Test 2",
-  },
-  {
-    value: "test-3",
-    label: "Test 3",
-  },
-];
 
 type FormInput = {
   streetAddress: string;
@@ -32,12 +17,31 @@ type FormInput = {
 };
 
 const CreatePropertyPage = () => {
+  const [placeQueryTrigger, setPlaceQueryTrigger] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
   const debouncedSearchValue = useDebounce(searchValue);
 
-  const { register, handleSubmit, reset } = useForm<FormInput>();
+  const { control, handleSubmit, setValue, reset } = useForm<FormInput>();
   const createProperty = api.property.createProperty.useMutation();
+
+  const { data: placeDetails } = api.googlePlaces.placeDetails.useQuery(
+    {
+      placeId: selectedValue,
+    },
+    {
+      enabled: placeQueryTrigger,
+    },
+  );
+
+  useEffect(() => {
+    if (placeDetails) {
+      setValue("streetAddress", placeDetails.street);
+      setValue("city", placeDetails.city);
+      setValue("state", placeDetails.state);
+      setValue("postalCode", placeDetails.postalCode);
+    }
+  }, [placeDetails]);
 
   const onSubmit = (data: FormInput) => {
     createProperty.mutate(data, {
@@ -52,11 +56,21 @@ const CreatePropertyPage = () => {
     return true;
   };
 
-  const { data } = api.googlePlaces.autocompleteSuggestions.useQuery({
-    searchInput: debouncedSearchValue,
-  });
+  const { data: predictions } =
+    api.googlePlaces.autocompleteSuggestions.useQuery(
+      {
+        searchInput: debouncedSearchValue,
+      },
+      { enabled: debouncedSearchValue.length > 0 },
+    );
 
-  console.log(data);
+  let suggestions =
+    predictions?.suggestions.map((suggestion: any) => {
+      return {
+        value: suggestion.placePrediction.placeId,
+        label: suggestion.placePrediction.text.text,
+      };
+    }) || [];
 
   return (
     <div className="flex h-full items-center justify-center gap-12">
@@ -75,28 +89,57 @@ const CreatePropertyPage = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
             <AutocompleteInput
               placeholder="Search..."
-              items={items}
+              items={suggestions}
               searchValue={searchValue}
               onSearchValueChange={setSearchValue}
               selectedValue={selectedValue}
               onSelectedValueChange={setSelectedValue}
+              dataFetchOnSelectionChange={setPlaceQueryTrigger}
             />
             <article className="grid grid-cols-[1fr_auto_1fr] place-items-center gap-4">
               <span className="w-full border-y"></span>
               <h4 className="w-fit font-extralight">or</h4>
               <span className="w-full border-y"></span>
             </article>
-            <Input
-              {...register("streetAddress")}
-              required
-              placeholder="Street Address"
+            <Controller
+              name="streetAddress"
+              control={control}
+              defaultValue=""
+              rules={{ required: "Street Address is required" }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  id="streetAddress"
+                  placeholder="Street Address"
+                />
+              )}
             />
-            <Input {...register("city")} required placeholder="City" />
-            <Input {...register("state")} required placeholder="State" />
-            <Input
-              {...register("postalCode")}
-              required
-              placeholder="Postal Code"
+            <Controller
+              name="city"
+              control={control}
+              defaultValue=""
+              rules={{ required: "City is required" }}
+              render={({ field }) => (
+                <Input {...field} id="city" placeholder="City" />
+              )}
+            />
+            <Controller
+              name="state"
+              control={control}
+              defaultValue=""
+              rules={{ required: "State is required" }}
+              render={({ field }) => (
+                <Input {...field} id="state" placeholder="State" />
+              )}
+            />
+            <Controller
+              name="postalCode"
+              control={control}
+              defaultValue=""
+              rules={{ required: "Postal Code is required" }}
+              render={({ field }) => (
+                <Input {...field} id="postalCode" placeholder="Postal Code" />
+              )}
             />
             <div className="h-2"></div>
             <Button type="submit">Add Property</Button>

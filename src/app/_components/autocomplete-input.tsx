@@ -15,13 +15,13 @@ import React, { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { input } from "zod";
 
 type Props<T extends string> = {
   searchValue: string;
   onSearchValueChange: (input: string) => void;
   selectedValue: T;
   onSelectedValueChange: (value: T) => void;
+  dataFetchOnSelectionChange: (shouldTriggerQuery: boolean) => void;
   items: { value: T; label: string }[];
   isLoading?: boolean;
   emptyMessage?: string;
@@ -33,6 +33,7 @@ const AutocompleteInput = <T extends string>({
   onSearchValueChange,
   selectedValue,
   onSelectedValueChange,
+  dataFetchOnSelectionChange,
   items,
   isLoading,
   emptyMessage = "No items.",
@@ -68,8 +69,10 @@ const AutocompleteInput = <T extends string>({
 
   const onSelectItem = (inputValue: string) => {
     if (inputValue === selectedValue) {
+      dataFetchOnSelectionChange(false);
       reset();
     } else {
+      dataFetchOnSelectionChange(true);
       onSelectedValueChange(inputValue as T);
       onSearchValueChange(labels[inputValue] ?? "");
     }
