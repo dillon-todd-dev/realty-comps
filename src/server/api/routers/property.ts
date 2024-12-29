@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { getPropertyDetails } from "@/lib/zillow";
 
 export const propertyRouter = createTRPCRouter({
   createProperty: protectedProcedure
@@ -12,7 +13,9 @@ export const propertyRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      console.log(input);
+      const address = `${input.streetAddress}, ${input.city}, ${input.state}, ${input.postalCode}`;
+      const propertyDetails = await getPropertyDetails(address);
+      console.log(propertyDetails.zpid);
       return true;
     }),
   addressAutocomplete: protectedProcedure

@@ -21,3 +21,43 @@ model User {
   lastName  String?
   imageUrl  String?
 }
+
+model Property {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  streetAddress String @unique
+  city String
+  state String
+  postalCode String
+  county String
+
+  description String
+  imageUrl String
+
+  propertyDetail PropertyDetail?
+}
+
+model PropertyDetail {
+  id String @id @default(cuid())
+
+  latitude Decimal
+  longitude Decimal
+
+  price Decimal
+  priceHistory String?
+
+  propertyTaxRate Decimal?
+  squareFootage Decimal?
+
+  mlsId String?
+  zpid Int
+
+  bedrooms Int?
+  bathrooms Decimal?
+
+  propertyId String @unique
+  property Property @relation(fields: [propertyId], references: [id])
+
+}

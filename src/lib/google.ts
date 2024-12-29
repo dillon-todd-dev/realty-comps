@@ -41,10 +41,12 @@ export const getPlaceDetails = async (placeId: string) => {
     const { data } = await axios.get(url, {
       headers: {
         "X-Goog-Api-Key": env.GOOGLE_PLACES_API_KEY,
-        "X-Goog-FieldMask": "id,name,attributions,photos,addressComponents",
+        "X-Goog-FieldMask": "addressComponents,photos",
         "Content-Type": "application/json",
       },
     });
+
+    console.log(data);
 
     const findAddressPart = (str: string) => {
       const addressPart = data.addressComponents.find(
@@ -63,7 +65,6 @@ export const getPlaceDetails = async (placeId: string) => {
     const city = findAddressPart("locality");
     const state = findAddressPart("administrative_area_level_1");
     const postalCode = findAddressPart("postal_code");
-    console.log("postal code", postalCode);
 
     return {
       street: `${streetNumber} ${streetName}`,
