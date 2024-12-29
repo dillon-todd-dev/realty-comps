@@ -13,7 +13,7 @@ const PropertiesPage = () => {
   return (
     <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {properties?.map((property: Property) => (
-        <Link key={property.id} href="#">
+        <Link key={property.id} href={`/properties/${property.id}`}>
           <div className="flex justify-center">
             <Card className="max-w-s w-full">
               <div className="relative">
