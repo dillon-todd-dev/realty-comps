@@ -1,25 +1,21 @@
 "use client";
 
 import { api } from "@/trpc/react";
-import { notFound } from "next/navigation";
-import React from "react";
+import { notFound, useParams } from "next/navigation";
+import React, { use } from "react";
 
-type Props = {
-  params: { propertyId: string };
-};
-
-const PropertyDetailPage = ({ params }: Props) => {
-  const propertyId = React.use(params);
+const PropertyDetailPage = () => {
+  const { propertyId } = useParams();
   console.log("property id", propertyId);
   if (!propertyId) {
     return notFound();
   }
 
   const { data: property } = api.property.getPropertyById.useQuery({
-    propertyId,
+    propertyId: propertyId as string,
   });
 
-  return <div>{property?.id}</div>;
+  return <div>{property?.streetAddress}</div>;
 };
 
 export default PropertyDetailPage;

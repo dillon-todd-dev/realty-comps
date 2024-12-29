@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useDebounce from "@/hooks/use-debounce";
 import { api } from "@/trpc/react";
+import { Loader2 } from "lucide-react";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -51,8 +52,11 @@ const CreatePropertyPage = () => {
         reset();
         redirect("/properties");
       },
-      onError: () => {
-        toast.error("Failed to add property");
+      onError: (error) => {
+        // if (error) {
+        //   console.error("Failed to add property", error);
+        //   toast.error("Failed to add property");
+        // }
       },
     });
     return true;
@@ -144,7 +148,15 @@ const CreatePropertyPage = () => {
               )}
             />
             <div className="h-2"></div>
-            <Button type="submit">Add Property</Button>
+            <Button type="submit">
+              {createProperty.isPending ? (
+                <div>
+                  <Loader2 className="size-4 animate-spin" />
+                </div>
+              ) : (
+                <p>Add Property</p>
+              )}
+            </Button>
           </form>
         </div>
       </div>

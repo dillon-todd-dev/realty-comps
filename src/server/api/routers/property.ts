@@ -41,13 +41,18 @@ export const propertyRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      return await ctx.db.property.findMany({
-        where: {
-          userId: ctx.user.userId!,
-        },
-        skip: input.skip,
-        take: input.take,
-      });
+      const [properties, totalProperties] = await Promise.all([
+        ctx.db.property.findMany({
+          where: {
+            userId: ctx.user.userId!,
+          },
+          skip: input.skip,
+          take: input.take,
+        }),
+        ctx.db.property.count(),
+      ]);
+
+      return { properties, totalProperties };
     }),
   getPropertyById: protectedProcedure
     .input(z.object({ propertyId: z.string() }))

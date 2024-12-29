@@ -12,7 +12,6 @@ export const getPropertyDetails = async (address: string) => {
       },
     });
 
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching property data", error);
