@@ -46,8 +46,6 @@ export const getPlaceDetails = async (placeId: string) => {
       },
     });
 
-    console.log(data);
-
     const findAddressPart = (str: string) => {
       const addressPart = data.addressComponents.find(
         (addressComponent: any) => {

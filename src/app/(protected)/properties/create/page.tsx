@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useDebounce from "@/hooks/use-debounce";
 import { api } from "@/trpc/react";
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
@@ -48,6 +49,7 @@ const CreatePropertyPage = () => {
       onSuccess: () => {
         toast.success("Property added successfully");
         reset();
+        redirect("/properties");
       },
       onError: () => {
         toast.error("Failed to add property");

@@ -42,7 +42,9 @@ const AppSidebar = () => {
 
   return (
     <Sidebar collapsible="icon" variant="floating">
-      <SidebarHeader>RealtyComps</SidebarHeader>
+      <SidebarHeader>
+        <h1 className="text-xl font-bold text-primary/80">RealtyComps</h1>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>

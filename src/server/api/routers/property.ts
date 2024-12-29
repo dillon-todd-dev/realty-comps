@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { getPropertyDetails } from "@/lib/zillow";
+import { getPropertyDetails, getPropertyImages } from "@/lib/zillow";
+import { skip } from "node:test";
 
 export const propertyRouter = createTRPCRouter({
   createProperty: protectedProcedure
@@ -15,13 +16,37 @@ export const propertyRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const address = `${input.streetAddress}, ${input.city}, ${input.state}, ${input.postalCode}`;
       const propertyDetails = await getPropertyDetails(address);
-      console.log(propertyDetails.zpid);
-      return true;
+      const propertyImages = await getPropertyImages(propertyDetails.zpid);
+      const property = await ctx.db.property.create({
+        data: {
+          userId: ctx.user.userId!,
+          streetAddress: input.streetAddress,
+          city: input.city,
+          state: input.state,
+          postalCode: input.postalCode,
+          county: propertyDetails.county,
+          latitude: propertyDetails.latitude,
+          longitude: propertyDetails.longitude,
+          imageUrl: propertyImages?.images[0],
+          description: propertyDetails.description,
+        },
+      });
+      return property;
     }),
-  addressAutocomplete: protectedProcedure
-    .input(z.object({ placeId: z.string() }))
+  getProperties: protectedProcedure
+    .input(
+      z.object({
+        take: z.number().optional(),
+        skip: z.number().optional(),
+      }),
+    )
     .query(async ({ ctx, input }) => {
-      console.log("place id", input.placeId);
-      return "";
+      return await ctx.db.property.findMany({
+        where: {
+          userId: ctx.user.userId!,
+        },
+        skip: input.skip,
+        take: input.take,
+      });
     }),
 });
