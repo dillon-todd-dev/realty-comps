@@ -1,5 +1,11 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Table,
   TableBody,
@@ -8,11 +14,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Star } from "lucide-react";
-import Link from "next/link";
 
-const properties: any[] = [
+interface Property {
+  id: number;
+  address: string;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  sqft: number;
+}
+
+const properties: Property[] = [
   {
     id: 1,
     address: "123 Main St, Anytown, USA",
@@ -55,25 +69,47 @@ const properties: any[] = [
   },
 ];
 
-const PropertyEvaluationPage = () => {
+export default function EvaluationDetailsPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const router = useRouter();
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you would typically send the evaluation data to your backend
+    console.log({ propertyId: params.id, rating, comment });
+    // After submission, redirect back to the property page
+    router.push(`/property/${params.id}`);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
       <div className="mx-auto max-w-7xl space-y-8">
-        <h1 className="text-3xl font-bold">Create Evaluation for Property 1</h1>
+        <h1 className="text-3xl font-bold">
+          Create Evaluation for Property {params.id}
+        </h1>
 
         <Card>
           <CardHeader>
             <CardTitle>Evaluation</CardTitle>
           </CardHeader>
           <CardContent>
-            <form className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">
                   Rating
                 </label>
                 <div className="flex">
                   {[1, 2, 3, 4, 5].map((value) => (
-                    <Star key={value} className={`h-8 w-8 cursor-pointer`} />
+                    <Star
+                      key={value}
+                      className={`h-8 w-8 cursor-pointer ${value <= rating ? "fill-current text-yellow-400" : "text-gray-300"}`}
+                      onClick={() => setRating(value)}
+                    />
                   ))}
                 </div>
               </div>
@@ -84,11 +120,18 @@ const PropertyEvaluationPage = () => {
                 >
                   Comment
                 </label>
+                <Textarea
+                  id="comment"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  rows={4}
+                  placeholder="Enter your evaluation..."
+                />
               </div>
               <div className="flex justify-end space-x-4">
-                <Button variant="outline" asChild>
-                  <Link href="/property/1">Cancel</Link>
-                </Button>
+                <Link href={`/property/${params.id}`} passHref>
+                  <Button variant="outline">Cancel</Button>
+                </Link>
                 <Button type="submit">Submit Evaluation</Button>
               </div>
             </form>
@@ -434,6 +477,4 @@ const PropertyEvaluationPage = () => {
       </div>
     </div>
   );
-};
-
-export default PropertyEvaluationPage;
+}
