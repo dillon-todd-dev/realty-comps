@@ -13,14 +13,14 @@ const ProtectedLayout = ({ children }: Props) => {
       {/* app sidebar */}
       <AppSidebar />
       <main className="m-2 w-full">
-        <div className="border-sidebar-border bg-sidebar flex items-center gap-2 rounded-md border p-2 px-4 shadow">
+        <div className="flex items-center gap-2 rounded-md border border-sidebar-border bg-sidebar p-2 px-4 shadow">
           {/* search bar */}
           <div className="ml-auto"></div>
           <UserButton />
         </div>
         <div className="h-4"></div>
         {/* main content */}
-        <div className="border-sidebar-border bg-sidebar h-[calc(100vh-6rem)] overflow-y-scroll rounded-md border p-4 shadow">
+        <div className="h-[calc(100vh-6rem)] overflow-y-scroll rounded-md border border-sidebar-border bg-sidebar p-4 shadow">
           {children}
         </div>
       </main>

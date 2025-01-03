@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -13,6 +14,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import ThemeToggle from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
 import { CreditCard, Home, LayoutDashboard, Plus } from "lucide-react";
 import Link from "next/link";
@@ -80,6 +82,9 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <ThemeToggle />
+      </SidebarFooter>
     </Sidebar>
   );
 };
