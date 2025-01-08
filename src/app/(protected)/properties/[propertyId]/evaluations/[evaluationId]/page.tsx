@@ -129,9 +129,9 @@ export default function EvaluationDetailsPage({
                 />
               </div>
               <div className="flex justify-end space-x-4">
-                <Link href={`/property/${params.id}`} passHref>
-                  <Button variant="outline">Cancel</Button>
-                </Link>
+                <Button variant="outline" asChild>
+                  <Link href={`/properties/${params.id}`}>Cancel</Link>
+                </Button>
                 <Button type="submit">Submit Evaluation</Button>
               </div>
             </form>
@@ -423,6 +423,9 @@ export default function EvaluationDetailsPage({
                   </div>
                 </CardContent>
               </Card>
+              <Button variant="outline" size="sm">
+                Update
+              </Button>
             </div>
             <Card className="mt-6">
               <CardHeader>

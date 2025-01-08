@@ -4,37 +4,11 @@ import PropertyDetails from "@/app/_components/property-details";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
-import { BarChart, DollarSign, Trash, TrendingUp } from "lucide-react";
+import { BarChart, DollarSign, Loader2, Trash, TrendingUp } from "lucide-react";
 import Link from "next/link";
-import { notFound, useParams } from "next/navigation";
+import { notFound, redirect, useParams } from "next/navigation";
 import React from "react";
-
-const evaluations = [
-  {
-    id: 1,
-    createdAt: "2023-07-01",
-    equityCapture: 50000,
-    annualCashFlow: 12000,
-    returnOnCapitalGain: 0.15,
-    cashOnCashReturn: 0.08,
-    marketValue: 400000,
-    rentValue: 2000,
-    saleComps: 5,
-    rentComps: 3,
-  },
-  {
-    id: 2,
-    createdAt: "2023-07-15",
-    equityCapture: 55000,
-    annualCashFlow: 13000,
-    returnOnCapitalGain: 0.16,
-    cashOnCashReturn: 0.09,
-    marketValue: 410000,
-    rentValue: 2100,
-    saleComps: 6,
-    rentComps: 4,
-  },
-];
+import { toast } from "sonner";
 
 const PropertyDetailPage = () => {
   const { propertyId } = useParams();
@@ -47,6 +21,24 @@ const PropertyDetailPage = () => {
     propertyId: propertyId as string,
   });
 
+  const { data: evaluations } = api.evaluation.getEvaluations.useQuery({
+    propertyId: propertyId as string,
+  });
+
+  const createEvaluation = api.evaluation.createEvaluation.useMutation();
+
+  const handleCreateEvaluation = () => {
+    createEvaluation.mutate(
+      { propertyId: property?.id! },
+      {
+        onSuccess: ({ id }) => {
+          toast.success("Successfully Created Evaluation!");
+          redirect(`/properties/${property?.id}/evaluations/${id}`);
+        },
+      },
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
       <div className="mx-auto max-w-7xl">
@@ -56,13 +48,19 @@ const PropertyDetailPage = () => {
           <CardContent className="p-6">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-2xl font-bold">Property Evaluations</h2>
-              <Button asChild>
-                <Link href={`/properties/${property?.id}`}>
-                  Create Evaluation
-                </Link>
+              <Button onClick={handleCreateEvaluation}>
+                <span>
+                  {createEvaluation.isPending ? (
+                    <div className="animate-spin">
+                      <Loader2 />
+                    </div>
+                  ) : (
+                    "Create Evaluation"
+                  )}
+                </span>
               </Button>
             </div>
-            {evaluations.length > 0 ? (
+            {evaluations ? (
               <div className="space-y-4">
                 {evaluations.map((evaluation) => (
                   <Card key={evaluation.id}>

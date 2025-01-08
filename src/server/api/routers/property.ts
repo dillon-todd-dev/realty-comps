@@ -29,8 +29,25 @@ export const propertyRouter = createTRPCRouter({
           longitude: propertyDetails.longitude,
           imageUrl: propertyImages?.images[0],
           description: propertyDetails.description,
+          propertyDetail: {
+            create: {
+              zpid: propertyDetails.zpid,
+              mlsId: propertyDetails.mlsId,
+              listPrice: propertyDetails.price,
+              annualHoa: propertyDetails.hoaFee,
+              annualHomeownersInsurance:
+                propertyDetails.annualHomeownersInsurance,
+              annualPropertyTaxes: propertyDetails.taxAnnualAmount,
+              propertyTaxRate: propertyDetails.propertyTaxRate,
+              beds: propertyDetails.bedrooms,
+              baths: propertyDetails.bathrooms,
+              squareFootage: propertyDetails.livingArea,
+              yearBuilt: propertyDetails.yearBuilt,
+            },
+          },
         },
       });
+      console.log(property);
       return property;
     }),
   getProperties: protectedProcedure

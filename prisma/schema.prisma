@@ -74,17 +74,8 @@ model PropertyDetail {
 
 model Evaluation {
   id String @id @default(cuid())
-
-  investmentDeal        InvestmentDeal?
-  conventionalFinancing ConventionalFinancing?
-  hardMoneyFinancing    HardMoneyFinancing?
-
-  propertyId String
-  property   Property @relation(fields: [propertyId], references: [id])
-}
-
-model InvestmentDeal {
-  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   estimatedSalePrice Decimal @default(0) @map("estimated_sale_price")
   sellerContribution Decimal @default(0) @map("seller_contribution")
@@ -101,26 +92,12 @@ model InvestmentDeal {
   propertyTax        Decimal @default(0) @map("property_tax")
   miscellaneous      Decimal @default(0)
 
-  evaluationId String     @unique
-  evaluation   Evaluation @relation(fields: [evaluationId], references: [id])
-}
-
-model ConventionalFinancing {
-  id String @id @default(cuid())
-
   downPayment       Decimal @default(20) @map("down_payment")
   loanTerm          Int     @default(30) @map("loan_term")
   interestRate      Decimal @default(5) @map("interest_rate")
   lenderFees        Decimal @default(6000) @map("lender_fees")
   mortgageInsurance Decimal @default(0) @map("mortgage_insurance")
   monthsOfTaxes     Int     @default(0) @map("months_of_taxes")
-
-  evaluationId String     @unique
-  evaluation   Evaluation @relation(fields: [evaluationId], references: [id])
-}
-
-model HardMoneyFinancing {
-  id String @id @default(cuid())
 
   hardLoanToValue      Decimal @default(70) @map("hard_loan_to_value")
   hardLenderFees       Decimal @default(10000) @map("hard_lender_fees")
@@ -136,6 +113,8 @@ model HardMoneyFinancing {
   refiMonthsOfTaxes     Int     @default(2) @map("refi_months_of_taxes")
   refiMortgageInsurance Decimal @default(0) @map("refi_mortgage_insurance")
 
-  evaluationId String     @unique
-  evaluation   Evaluation @relation(fields: [evaluationId], references: [id])
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  @@map("evaluations")
 }
