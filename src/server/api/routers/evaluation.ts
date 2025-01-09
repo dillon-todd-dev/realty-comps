@@ -23,4 +23,19 @@ export const evaluationRouter = createTRPCRouter({
         },
       });
     }),
+  getEvaluationById: protectedProcedure
+    .input(z.object({ evaluationId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.evaluation.findUnique({
+        where: { id: input.evaluationId },
+        include: { property: true },
+      });
+    }),
+  deleteEvaluation: protectedProcedure
+    .input(z.object({ evaluationId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.evaluation.delete({
+        where: { id: input.evaluationId },
+      });
+    }),
 });

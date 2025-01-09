@@ -1,11 +1,15 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import { Property } from "@prisma/client";
+import { api } from "@/trpc/react";
+import { Prisma } from "@prisma/client";
 import { Bath, Bed, Ruler } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 type Props = {
-  property: Property;
+  property: Prisma.PropertyGetPayload<{ include: { propertyDetail: true } }>;
 };
 
 const PropertyDetails = ({ property }: Props) => {
@@ -14,8 +18,8 @@ const PropertyDetails = ({ property }: Props) => {
       <div className="md:flex">
         <div className="md:w-1/2 md:flex-shrink-0">
           <Image
-            src={property?.imageUrl!}
-            alt={property?.streetAddress!}
+            src={property?.imageUrl ?? "/no-image-available.jpg"}
+            alt={property?.streetAddress ?? "property"}
             width={600}
             height={400}
             className="h-64 w-full object-cover md:h-full"
@@ -32,15 +36,19 @@ const PropertyDetails = ({ property }: Props) => {
           <div className="mt-4 flex flex-wrap gap-4 text-gray-600">
             <div className="flex items-center">
               <Bed className="mr-2 h-5 w-5" />
-              <span>3 bedrooms</span>
+              <span>{property?.propertyDetail?.beds} bedrooms</span>
             </div>
             <div className="flex items-center">
               <Bath className="mr-2 h-5 w-5" />
-              <span>2 bathrooms</span>
+              <span>
+                {property?.propertyDetail?.baths?.toString()} bathrooms
+              </span>
             </div>
             <div className="flex items-center">
               <Ruler className="mr-2 h-5 w-5" />
-              <span>1900 sqft</span>
+              <span>
+                {property?.propertyDetail?.squareFootage?.toString()} sqft
+              </span>
             </div>
           </div>
           <div className="mt-6 flex items-center">

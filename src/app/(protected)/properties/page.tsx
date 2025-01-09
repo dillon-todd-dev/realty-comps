@@ -30,7 +30,7 @@ const PropertiesPage = () => {
               <Card className="max-height-[600px] flex h-full flex-col">
                 <div className="relative max-h-[300px] w-full pt-[50%]">
                   <Image
-                    src={property.imageUrl!}
+                    src={property.imageUrl ?? "/no-image-available.jpg"}
                     alt="property"
                     fill
                     className="rounded-t-lg object-cover"

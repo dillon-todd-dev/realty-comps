@@ -1,11 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { notFound, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Table,
   TableBody,
@@ -15,7 +12,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star } from "lucide-react";
+import { api } from "@/trpc/react";
+import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 
 interface Property {
   id: number;
@@ -26,118 +25,120 @@ interface Property {
   sqft: number;
 }
 
-const properties: Property[] = [
-  {
-    id: 1,
-    address: "123 Main St, Anytown, USA",
-    price: 350000,
-    bedrooms: 3,
-    bathrooms: 2,
-    sqft: 1800,
-  },
-  {
-    id: 2,
-    address: "456 Elm St, Somewhere, USA",
-    price: 425000,
-    bedrooms: 4,
-    bathrooms: 2.5,
-    sqft: 2200,
-  },
-  {
-    id: 3,
-    address: "789 Oak Ave, Elsewhere, USA",
-    price: 550000,
-    bedrooms: 5,
-    bathrooms: 3,
-    sqft: 2800,
-  },
-  {
-    id: 4,
-    address: "101 Pine Rd, Nowhere, USA",
-    price: 300000,
-    bedrooms: 2,
-    bathrooms: 1,
-    sqft: 1500,
-  },
-  {
-    id: 5,
-    address: "202 Maple Dr, Anywhere, USA",
-    price: 475000,
-    bedrooms: 4,
-    bathrooms: 3,
-    sqft: 2400,
-  },
-];
+type ConventionalFinancingFormData = {
+  downPayment: number;
+  loanTerm: number;
+  interestRate: number;
+  lenderTitleFees: number;
+  monthsTaxIns: number;
+  annualMortgageIns: number;
+};
 
-export default function EvaluationDetailsPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const router = useRouter();
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
+type DealTermsFormData = {
+  estimatedSalePrice: number;
+  sellerContribution: number;
+  repairsMakeReady: number;
+  insuranceAnnually: number;
+  rent: number;
+  hardAppraisedPrice: number;
+  survey: number;
+  hoaAnnually: number;
+  inspection: number;
+  maxRefiCashback: number;
+  purchasePrice: number;
+  appraisal: number;
+  propertyTaxAnnually: number;
+  miscMonthly: number;
+};
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you would typically send the evaluation data to your backend
-    console.log({ propertyId: params.id, rating, comment });
-    // After submission, redirect back to the property page
-    router.push(`/property/${params.id}`);
+const properties: Property[] = [];
+
+export default function CreateEvaluationPage() {
+  const { evaluationId } = useParams();
+  if (!evaluationId) {
+    return notFound();
+  }
+
+  const { data: evaluation } = api.evaluation.getEvaluationById.useQuery({
+    evaluationId: evaluationId as string,
+  });
+
+  const dealTermsForm = useForm<DealTermsFormData>();
+  const conventionalFinancingForm = useForm<ConventionalFinancingFormData>();
+
+  const handleDealTermsSubmit = (dealTermsData: DealTermsFormData) => {
+    console.log(dealTermsData);
+  };
+
+  const handleConventionalFinancingSubmit = (
+    conventionalFinancingData: ConventionalFinancingFormData,
+  ) => {
+    console.log(conventionalFinancingData);
+  };
+
+  useEffect(() => {
+    if (evaluation) {
+      dealTermsForm.reset({
+        estimatedSalePrice: Number(evaluation.estimatedSalePrice),
+        sellerContribution: Number(evaluation.sellerContribution),
+        repairsMakeReady: Number(evaluation.repairs),
+        insuranceAnnually: Number(evaluation.insurance),
+        rent: Number(evaluation.rent),
+        hardAppraisedPrice: Number(evaluation.hardAppraisedPrice),
+        survey: Number(evaluation.survey),
+        hoaAnnually: Number(evaluation.hoa),
+        inspection: Number(evaluation.inspection),
+        maxRefiCashback: Number(evaluation.maxRefiCashback),
+        purchasePrice: Number(evaluation.purchasePrice),
+        appraisal: Number(evaluation.appraisal),
+        propertyTaxAnnually: Number(evaluation.propertyTax),
+        miscMonthly: Number(evaluation.miscellaneous),
+      });
+
+      conventionalFinancingForm.reset({
+        downPayment: Number(evaluation.downPayment),
+        loanTerm: Number(evaluation.loanTerm),
+        interestRate: Number(evaluation.interestRate),
+        lenderTitleFees: Number(evaluation.lenderFees),
+        monthsTaxIns: Number(evaluation.monthsOfTaxes),
+        annualMortgageIns: Number(evaluation.mortgageInsurance),
+      });
+    }
+  }, [evaluation, dealTermsForm.reset, conventionalFinancingForm.reset]);
+
+  // Placeholder calculations (replace with actual calculations in a real app)
+  const gainsAndReturns = {
+    equityCapture: 50000,
+    annualCashFlow: 12000,
+    returnOnEquityCapture: 15,
+    cashOnCashReturn: 8,
+  };
+
+  const cashOutOfPocket = {
+    downPayment: 50000,
+    closingCosts: 5000,
+    prepaidExpenses: 3000,
+    repairs: 10000,
+    total: 68000,
+  };
+
+  const cashFlow = {
+    monthlyRent: 2000,
+    notePayment: 1200,
+    propertyTax: 200,
+    propertyIns: 100,
+    mortgageIns: 50,
+    hoa: 0,
+    miscMonthly: 100,
+    total: 350,
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
       <div className="mx-auto max-w-7xl space-y-8">
-        <h1 className="text-3xl font-bold">
-          Create Evaluation for Property {params.id}
-        </h1>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Evaluation</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Rating
-                </label>
-                <div className="flex">
-                  {[1, 2, 3, 4, 5].map((value) => (
-                    <Star
-                      key={value}
-                      className={`h-8 w-8 cursor-pointer ${value <= rating ? "fill-current text-yellow-400" : "text-gray-300"}`}
-                      onClick={() => setRating(value)}
-                    />
-                  ))}
-                </div>
-              </div>
-              <div>
-                <label
-                  htmlFor="comment"
-                  className="mb-1 block text-sm font-medium text-gray-700"
-                >
-                  Comment
-                </label>
-                <Textarea
-                  id="comment"
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  rows={4}
-                  placeholder="Enter your evaluation..."
-                />
-              </div>
-              <div className="flex justify-end space-x-4">
-                <Button variant="outline" asChild>
-                  <Link href={`/properties/${params.id}`}>Cancel</Link>
-                </Button>
-                <Button type="submit">Submit Evaluation</Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-
+        <div>
+          <span>{evaluation?.property.streetAddress}</span>
+        </div>
         <Card>
           <CardHeader>
             <CardTitle>Sale Comparables</CardTitle>
@@ -264,169 +265,368 @@ export default function EvaluationDetailsPage({
           <CardHeader>
             <CardTitle>Cash Flow Analysis</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Deal Terms</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
+          <CardContent className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Deal terms, expenses, revenue</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form
+                  onSubmit={dealTermsForm.handleSubmit(handleDealTermsSubmit)}
+                  className="space-y-4"
+                >
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
-                      <label
-                        htmlFor="purchasePrice"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                      >
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        Estimated Sale Price
+                      </label>
+                      <Input
+                        {...dealTermsForm.register("estimatedSalePrice")}
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        Seller Contribution
+                      </label>
+                      <Input
+                        {...dealTermsForm.register("sellerContribution")}
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        Repairs & Make-ready
+                      </label>
+                      <Input {...dealTermsForm.register("repairsMakeReady")} />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        Insurance Annually
+                      </label>
+                      <Input {...dealTermsForm.register("insuranceAnnually")} />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        Rent
+                      </label>
+                      <Input {...dealTermsForm.register("rent")} />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        Hard Appraised Price
+                      </label>
+                      <Input
+                        {...dealTermsForm.register("hardAppraisedPrice")}
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        Survey
+                      </label>
+                      <Input {...dealTermsForm.register("survey")} />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        HOA Annually
+                      </label>
+                      <Input {...dealTermsForm.register("hoaAnnually")} />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        Inspection
+                      </label>
+                      <Input {...dealTermsForm.register("inspection")} />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        Max Refi Cashback
+                      </label>
+                      <Input {...dealTermsForm.register("maxRefiCashback")} />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
                         Purchase Price
                       </label>
+                      <Input {...dealTermsForm.register("purchasePrice")} />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        Appraisal
+                      </label>
+                      <Input {...dealTermsForm.register("appraisal")} />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        Property Tax Annually
+                      </label>
                       <Input
-                        type="number"
-                        id="purchasePrice"
-                        placeholder="Purchase Price"
+                        {...dealTermsForm.register("propertyTaxAnnually")}
                       />
                     </div>
                     <div>
-                      <label
-                        htmlFor="downPayment"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                      >
-                        Down Payment
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        Misc. Monthly
                       </label>
-                      <Input
-                        type="number"
-                        id="downPayment"
-                        placeholder="Down Payment"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="interestRate"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                      >
-                        Interest Rate
-                      </label>
-                      <Input
-                        type="number"
-                        id="interestRate"
-                        placeholder="Interest Rate"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="loanTerm"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                      >
-                        Loan Term (years)
-                      </label>
-                      <Input
-                        type="number"
-                        id="loanTerm"
-                        placeholder="Loan Term"
-                      />
+                      <Input {...dealTermsForm.register("miscMonthly")} />
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Expenses</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <label
-                        htmlFor="propertyTax"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                      >
-                        Property Tax
-                      </label>
-                      <Input
-                        type="number"
-                        id="propertyTax"
-                        placeholder="Property Tax"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="insurance"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                      >
-                        Insurance
-                      </label>
-                      <Input
-                        type="number"
-                        id="insurance"
-                        placeholder="Insurance"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="maintenance"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                      >
-                        Maintenance
-                      </label>
-                      <Input
-                        type="number"
-                        id="maintenance"
-                        placeholder="Maintenance"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="utilities"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                      >
-                        Utilities
-                      </label>
-                      <Input
-                        type="number"
-                        id="utilities"
-                        placeholder="Utilities"
-                      />
-                    </div>
+                  <div className="mt-6 flex justify-end space-x-4">
+                    <Button type="button">Update</Button>
                   </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Revenue</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <label
-                        htmlFor="monthlyRent"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                      >
-                        Monthly Rent
-                      </label>
-                      <Input
-                        type="number"
-                        id="monthlyRent"
-                        placeholder="Monthly Rent"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="otherIncome"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                      >
-                        Other Income
-                      </label>
-                      <Input
-                        type="number"
-                        id="otherIncome"
-                        placeholder="Other Income"
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              <Button variant="outline" size="sm">
-                Update
-              </Button>
-            </div>
+                </form>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Conventional Financing</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <Card>
+                  <CardContent>
+                    <form
+                      onSubmit={conventionalFinancingForm.handleSubmit(
+                        handleConventionalFinancingSubmit,
+                      )}
+                      className="space-y-4"
+                    >
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                        <div>
+                          <label className="mb-1 block text-sm font-medium text-gray-700">
+                            Down Payment
+                          </label>
+                          <Input
+                            {...conventionalFinancingForm.register(
+                              "downPayment",
+                            )}
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block text-sm font-medium text-gray-700">
+                            Loan Term (years)
+                          </label>
+                          <Input
+                            {...conventionalFinancingForm.register("loanTerm")}
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block text-sm font-medium text-gray-700">
+                            Interest Rate (%)
+                          </label>
+                          <Input
+                            {...conventionalFinancingForm.register(
+                              "interestRate",
+                            )}
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block text-sm font-medium text-gray-700">
+                            Lender & Title Fees
+                          </label>
+                          <Input
+                            {...conventionalFinancingForm.register(
+                              "lenderTitleFees",
+                            )}
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block text-sm font-medium text-gray-700">
+                            # Months Tax & Ins
+                          </label>
+                          <Input
+                            {...conventionalFinancingForm.register(
+                              "monthsTaxIns",
+                            )}
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block text-sm font-medium text-gray-700">
+                            Mortgage Ins. Annually
+                          </label>
+                          <Input
+                            {...conventionalFinancingForm.register(
+                              "annualMortgageIns",
+                            )}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex justify-end">
+                        <Button type="button">Update</Button>
+                      </div>
+                    </form>
+                  </CardContent>
+                </Card>
+
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Gains And Returns</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Table>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              Equity Capture
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ${gainsAndReturns.equityCapture.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              Annual Cash Flow
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ${gainsAndReturns.annualCashFlow.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              Return On Equity Capture
+                            </TableCell>
+                            <TableCell className="text-right">
+                              {gainsAndReturns.returnOnEquityCapture}%
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              Cash On Cash Return
+                            </TableCell>
+                            <TableCell className="text-right">
+                              {gainsAndReturns.cashOnCashReturn}%
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Cash Out Of Pocket</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Table>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              Down Payment
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ${cashOutOfPocket.downPayment.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              Closing Costs
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ${cashOutOfPocket.closingCosts.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              Prepaid Expenses
+                            </TableCell>
+                            <TableCell className="text-right">
+                              $
+                              {cashOutOfPocket.prepaidExpenses.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              Repairs
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ${cashOutOfPocket.repairs.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">TOTAL</TableCell>
+                            <TableCell className="text-right font-bold">
+                              ${cashOutOfPocket.total.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Cash Flow</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Table>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              Monthly Rent
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ${cashFlow.monthlyRent.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              Note Payment
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ${cashFlow.notePayment.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              Property Tax
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ${cashFlow.propertyTax.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              Property Ins.
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ${cashFlow.propertyIns.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              Mortgage Ins.
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ${cashFlow.mortgageIns.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">HOA</TableCell>
+                            <TableCell className="text-right">
+                              ${cashFlow.hoa.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              Misc. Monthly
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ${cashFlow.miscMonthly.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">TOTAL</TableCell>
+                            <TableCell className="text-right font-bold">
+                              ${cashFlow.total.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card className="mt-6">
               <CardHeader>
                 <CardTitle>Hard Money Financing</CardTitle>

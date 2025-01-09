@@ -74,8 +74,8 @@ model PropertyDetail {
 
 model Evaluation {
   id String @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   estimatedSalePrice Decimal @default(0) @map("estimated_sale_price")
   sellerContribution Decimal @default(0) @map("seller_contribution")

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import useDebounce from "@/hooks/use-debounce";
 import { api } from "@/trpc/react";
 import { Loader2 } from "lucide-react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
@@ -19,6 +19,7 @@ type FormInput = {
 };
 
 const CreatePropertyPage = () => {
+  const router = useRouter();
   const [placeQueryTrigger, setPlaceQueryTrigger] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
@@ -50,13 +51,10 @@ const CreatePropertyPage = () => {
       onSuccess: () => {
         toast.success("Property added successfully");
         reset();
-        redirect("/properties");
+        router.push("/properties");
       },
-      onError: (error) => {
-        // if (error) {
-        //   console.error("Failed to add property", error);
-        //   toast.error("Failed to add property");
-        // }
+      onError: () => {
+        toast.error("Failed to add property");
       },
     });
     return true;

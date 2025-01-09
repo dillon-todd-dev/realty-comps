@@ -6,13 +6,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import { BarChart, DollarSign, Loader2, Trash, TrendingUp } from "lucide-react";
 import Link from "next/link";
-import { notFound, redirect, useParams } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 
 const PropertyDetailPage = () => {
+  const utils = api.useUtils();
+  const router = useRouter();
   const { propertyId } = useParams();
-  console.log("property id", propertyId);
   if (!propertyId) {
     return notFound();
   }
@@ -26,14 +27,36 @@ const PropertyDetailPage = () => {
   });
 
   const createEvaluation = api.evaluation.createEvaluation.useMutation();
+  const deleteEvaluation = api.evaluation.deleteEvaluation.useMutation({
+    onSuccess: () => {
+      utils.evaluation.getEvaluations.invalidate();
+    },
+  });
 
   const handleCreateEvaluation = () => {
     createEvaluation.mutate(
       { propertyId: property?.id! },
       {
         onSuccess: ({ id }) => {
-          toast.success("Successfully Created Evaluation!");
-          redirect(`/properties/${property?.id}/evaluations/${id}`);
+          toast.success("Successfully created evaluation!");
+          router.push(`/properties/${property?.id}/evaluations/${id}`);
+        },
+        onError: () => {
+          toast.error("Unable to create property evaluation");
+        },
+      },
+    );
+  };
+
+  const handleDeleteEvaluation = (evaluationId: string) => {
+    deleteEvaluation.mutate(
+      { evaluationId },
+      {
+        onSuccess: () => {
+          toast.success("Successfully deleted evaluation");
+        },
+        onError: () => {
+          toast.error("Unable to delete evaluation");
         },
       },
     );
@@ -70,7 +93,7 @@ const PropertyDetailPage = () => {
                           Evaluation {evaluation.id}
                         </span>
                         <span className="text-sm text-gray-500">
-                          {evaluation.createdAt}
+                          {evaluation.createdAt.toLocaleDateString()}
                         </span>
                       </div>
                       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -80,7 +103,8 @@ const PropertyDetailPage = () => {
                             Equity Capture
                           </p>
                           <p className="text-sm font-bold">
-                            ${evaluation.equityCapture.toLocaleString()}
+                            {/* ${evaluation.equityCapture.toLocaleString()} */}
+                            $50,000
                           </p>
                         </div>
                         <div className="flex flex-col items-center">
@@ -89,7 +113,8 @@ const PropertyDetailPage = () => {
                             Annual Cash Flow
                           </p>
                           <p className="text-sm font-bold">
-                            ${evaluation.annualCashFlow.toLocaleString()}
+                            {/* ${evaluation.annualCashFlow.toLocaleString()} */}
+                            $2,000
                           </p>
                         </div>
                         <div className="flex flex-col items-center">
@@ -98,7 +123,8 @@ const PropertyDetailPage = () => {
                             Return On Capital Gain
                           </p>
                           <p className="text-sm font-bold">
-                            {(evaluation.returnOnCapitalGain * 100).toFixed(2)}%
+                            {/* {(evaluation.returnOnCapitalGain * 100).toFixed(2)}% */}
+                            8.00%
                           </p>
                         </div>
                         <div className="flex flex-col items-center">
@@ -107,7 +133,8 @@ const PropertyDetailPage = () => {
                             Cash On Cash Return
                           </p>
                           <p className="text-sm font-bold">
-                            {(evaluation.cashOnCashReturn * 100).toFixed(2)}%
+                            {/* {(evaluation.cashOnCashReturn * 100).toFixed(2)}% */}
+                            7.00%
                           </p>
                         </div>
                       </div>
@@ -119,7 +146,11 @@ const PropertyDetailPage = () => {
                             Edit
                           </Link>
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDeleteEvaluation(evaluation.id)}
+                        >
                           <Trash className="mr-2 h-4 w-4" />
                           Delete
                         </Button>

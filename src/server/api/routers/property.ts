@@ -74,8 +74,10 @@ export const propertyRouter = createTRPCRouter({
   getPropertyById: protectedProcedure
     .input(z.object({ propertyId: z.string() }))
     .query(async ({ ctx, input }) => {
-      return await ctx.db.property.findUnique({
+      const property = await ctx.db.property.findUnique({
         where: { userId: ctx.user.userId!, id: input.propertyId },
+        include: { propertyDetail: true },
       });
+      return property;
     }),
 });
