@@ -14,7 +14,7 @@ type Props = {
 
 const PropertyDetails = ({ property }: Props) => {
   return (
-    <div className="mb-8 overflow-hidden rounded-lg bg-white shadow-md">
+    <div className="mb-8 overflow-hidden rounded-lg shadow-md">
       <div className="md:flex">
         <div className="md:w-1/2 md:flex-shrink-0">
           <Image
@@ -29,11 +29,9 @@ const PropertyDetails = ({ property }: Props) => {
           <div className="text-sm font-semibold uppercase tracking-wide text-indigo-500">
             Property ID: {property?.id}
           </div>
-          <h1 className="mt-1 text-3xl font-bold text-gray-900">
-            {property?.streetAddress}
-          </h1>
-          <p className="mt-2 text-3xl font-bold text-gray-900">$246,000</p>
-          <div className="mt-4 flex flex-wrap gap-4 text-gray-600">
+          <h1 className="mt-1 text-3xl font-bold">{property?.streetAddress}</h1>
+          <p className="mt-2 text-3xl font-bold">$246,000</p>
+          <div className="mt-4 flex flex-wrap gap-4">
             <div className="flex items-center">
               <Bed className="mr-2 h-5 w-5" />
               <span>{property?.propertyDetail?.beds} bedrooms</span>

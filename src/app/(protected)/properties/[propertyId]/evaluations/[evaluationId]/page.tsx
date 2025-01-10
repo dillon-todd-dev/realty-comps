@@ -16,6 +16,7 @@ import { api } from "@/trpc/react";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 interface Property {
   id: number;
@@ -38,23 +39,23 @@ type ConventionalFinancingFormData = {
 type DealTermsFormData = {
   estimatedSalePrice: number;
   sellerContribution: number;
-  repairsMakeReady: number;
-  insuranceAnnually: number;
+  repairs: number;
+  insurance: number;
   rent: number;
   hardAppraisedPrice: number;
   survey: number;
-  hoaAnnually: number;
+  hoa: number;
   inspection: number;
   maxRefiCashback: number;
   purchasePrice: number;
   appraisal: number;
-  propertyTaxAnnually: number;
-  miscMonthly: number;
+  propertyTax: number;
+  miscellaneous: number;
 };
 
 const properties: Property[] = [];
 
-export default function CreateEvaluationPage() {
+export default function EvaluationPage() {
   const utils = api.useUtils();
   const { evaluationId } = useParams();
   if (!evaluationId) {
@@ -73,7 +74,22 @@ export default function CreateEvaluationPage() {
   const handleDealTermsSubmit = (dealTermsData: DealTermsFormData) => {
     updateDealTerms.mutate(
       {
-        data: dealTermsData,
+        data: {
+          estimatedSalePrice: Number(dealTermsData.estimatedSalePrice),
+          sellerContribution: Number(dealTermsData.sellerContribution),
+          repairs: Number(dealTermsData.repairs),
+          insurance: Number(dealTermsData.insurance),
+          rent: Number(dealTermsData.rent),
+          hardAppraisedPrice: Number(dealTermsData.hardAppraisedPrice),
+          survey: Number(dealTermsData.survey),
+          hoa: Number(dealTermsData.hoa),
+          inspection: Number(dealTermsData.inspection),
+          maxRefiCashback: Number(dealTermsData.maxRefiCashback),
+          purchasePrice: Number(dealTermsData.purchasePrice),
+          appraisal: Number(dealTermsData.appraisal),
+          propertyTax: Number(dealTermsData.propertyTax),
+          miscellaneous: Number(dealTermsData.miscellaneous),
+        },
         evaluationId: evaluation?.id!,
       },
       {
@@ -101,18 +117,18 @@ export default function CreateEvaluationPage() {
       dealTermsForm.reset({
         estimatedSalePrice: Number(evaluation.estimatedSalePrice),
         sellerContribution: Number(evaluation.sellerContribution),
-        repairsMakeReady: Number(evaluation.repairs),
-        insuranceAnnually: Number(evaluation.insurance),
+        repairs: Number(evaluation.repairs),
+        insurance: Number(evaluation.insurance),
         rent: Number(evaluation.rent),
         hardAppraisedPrice: Number(evaluation.hardAppraisedPrice),
         survey: Number(evaluation.survey),
-        hoaAnnually: Number(evaluation.hoa),
+        hoa: Number(evaluation.hoa),
         inspection: Number(evaluation.inspection),
         maxRefiCashback: Number(evaluation.maxRefiCashback),
         purchasePrice: Number(evaluation.purchasePrice),
         appraisal: Number(evaluation.appraisal),
-        propertyTaxAnnually: Number(evaluation.propertyTax),
-        miscMonthly: Number(evaluation.miscellaneous),
+        propertyTax: Number(evaluation.propertyTax),
+        miscellaneous: Number(evaluation.miscellaneous),
       });
 
       conventionalFinancingForm.reset({
@@ -149,12 +165,12 @@ export default function CreateEvaluationPage() {
     propertyIns: 100,
     mortgageIns: 50,
     hoa: 0,
-    miscMonthly: 100,
+    miscellaneous: 100,
     total: 350,
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen p-4 sm:p-6 md:p-8">
       <div className="mx-auto max-w-7xl space-y-8">
         <div>
           <span>{evaluation?.property.streetAddress}</span>
@@ -168,7 +184,7 @@ export default function CreateEvaluationPage() {
               <div>
                 <label
                   htmlFor="radius"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1 block text-sm font-medium"
                 >
                   Radius (miles)
                 </label>
@@ -177,7 +193,7 @@ export default function CreateEvaluationPage() {
               <div>
                 <label
                   htmlFor="bedsMin"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1 block text-sm font-medium"
                 >
                   Beds Min
                 </label>
@@ -186,7 +202,7 @@ export default function CreateEvaluationPage() {
               <div>
                 <label
                   htmlFor="bedsMax"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1 block text-sm font-medium"
                 >
                   Beds Max
                 </label>
@@ -195,7 +211,7 @@ export default function CreateEvaluationPage() {
               <div>
                 <label
                   htmlFor="bathsMin"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1 block text-sm font-medium"
                 >
                   Baths Min
                 </label>
@@ -204,7 +220,7 @@ export default function CreateEvaluationPage() {
               <div>
                 <label
                   htmlFor="bathsMax"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1 block text-sm font-medium"
                 >
                   Baths Max
                 </label>
@@ -213,7 +229,7 @@ export default function CreateEvaluationPage() {
               <div>
                 <label
                   htmlFor="garageMin"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1 block text-sm font-medium"
                 >
                   Garage Min
                 </label>
@@ -222,7 +238,7 @@ export default function CreateEvaluationPage() {
               <div>
                 <label
                   htmlFor="garageMax"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1 block text-sm font-medium"
                 >
                   Garage Max
                 </label>
@@ -231,7 +247,7 @@ export default function CreateEvaluationPage() {
               <div>
                 <label
                   htmlFor="yearBuilt"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1 block text-sm font-medium"
                 >
                   Year Built +/-
                 </label>
@@ -244,7 +260,7 @@ export default function CreateEvaluationPage() {
               <div>
                 <label
                   htmlFor="monthsClosed"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1 block text-sm font-medium"
                 >
                   Months Closed
                 </label>
@@ -297,7 +313,7 @@ export default function CreateEvaluationPage() {
                 >
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium">
                         Estimated Sale Price
                       </label>
                       <Input
@@ -305,7 +321,7 @@ export default function CreateEvaluationPage() {
                       />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium">
                         Seller Contribution
                       </label>
                       <Input
@@ -313,25 +329,25 @@ export default function CreateEvaluationPage() {
                       />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium">
                         Repairs & Make-ready
                       </label>
-                      <Input {...dealTermsForm.register("repairsMakeReady")} />
+                      <Input {...dealTermsForm.register("repairs")} />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium">
                         Insurance Annually
                       </label>
-                      <Input {...dealTermsForm.register("insuranceAnnually")} />
+                      <Input {...dealTermsForm.register("insurance")} />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium">
                         Rent
                       </label>
                       <Input {...dealTermsForm.register("rent")} />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium">
                         Hard Appraised Price
                       </label>
                       <Input
@@ -339,58 +355,66 @@ export default function CreateEvaluationPage() {
                       />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium">
                         Survey
                       </label>
                       <Input {...dealTermsForm.register("survey")} />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium">
                         HOA Annually
                       </label>
-                      <Input {...dealTermsForm.register("hoaAnnually")} />
+                      <Input {...dealTermsForm.register("hoa")} />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium">
                         Inspection
                       </label>
                       <Input {...dealTermsForm.register("inspection")} />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium">
                         Max Refi Cashback
                       </label>
                       <Input {...dealTermsForm.register("maxRefiCashback")} />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium">
                         Purchase Price
                       </label>
                       <Input {...dealTermsForm.register("purchasePrice")} />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium">
                         Appraisal
                       </label>
                       <Input {...dealTermsForm.register("appraisal")} />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium">
                         Property Tax Annually
                       </label>
-                      <Input
-                        {...dealTermsForm.register("propertyTaxAnnually")}
-                      />
+                      <Input {...dealTermsForm.register("propertyTax")} />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium">
                         Misc. Monthly
                       </label>
-                      <Input {...dealTermsForm.register("miscMonthly")} />
+                      <Input {...dealTermsForm.register("miscellaneous")} />
                     </div>
                   </div>
                   <div className="mt-6 flex justify-end space-x-4">
-                    <Button type="button">Update</Button>
+                    <Button type="submit">
+                      <span>
+                        {updateDealTerms.isPending ? (
+                          <div className="animate-spin">
+                            <Loader2 />
+                          </div>
+                        ) : (
+                          "Update"
+                        )}
+                      </span>
+                    </Button>
                   </div>
                 </form>
               </CardContent>
@@ -411,7 +435,7 @@ export default function CreateEvaluationPage() {
                     >
                       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div>
-                          <label className="mb-1 block text-sm font-medium text-gray-700">
+                          <label className="mb-1 block text-sm font-medium">
                             Down Payment
                           </label>
                           <Input
@@ -421,7 +445,7 @@ export default function CreateEvaluationPage() {
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium text-gray-700">
+                          <label className="mb-1 block text-sm font-medium">
                             Loan Term (years)
                           </label>
                           <Input
@@ -429,7 +453,7 @@ export default function CreateEvaluationPage() {
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium text-gray-700">
+                          <label className="mb-1 block text-sm font-medium">
                             Interest Rate (%)
                           </label>
                           <Input
@@ -439,7 +463,7 @@ export default function CreateEvaluationPage() {
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium text-gray-700">
+                          <label className="mb-1 block text-sm font-medium">
                             Lender & Title Fees
                           </label>
                           <Input
@@ -449,7 +473,7 @@ export default function CreateEvaluationPage() {
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium text-gray-700">
+                          <label className="mb-1 block text-sm font-medium">
                             # Months Tax & Ins
                           </label>
                           <Input
@@ -459,7 +483,7 @@ export default function CreateEvaluationPage() {
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium text-gray-700">
+                          <label className="mb-1 block text-sm font-medium">
                             Mortgage Ins. Annually
                           </label>
                           <Input
@@ -630,7 +654,7 @@ export default function CreateEvaluationPage() {
                               Misc. Monthly
                             </TableCell>
                             <TableCell className="text-right">
-                              ${cashFlow.miscMonthly.toLocaleString()}
+                              ${cashFlow.miscellaneous.toLocaleString()}
                             </TableCell>
                           </TableRow>
                           <TableRow>
@@ -656,7 +680,7 @@ export default function CreateEvaluationPage() {
                   <div>
                     <label
                       htmlFor="loanAmount"
-                      className="mb-1 block text-sm font-medium text-gray-700"
+                      className="mb-1 block text-sm font-medium"
                     >
                       Loan Amount
                     </label>
@@ -669,7 +693,7 @@ export default function CreateEvaluationPage() {
                   <div>
                     <label
                       htmlFor="interestRateHM"
-                      className="mb-1 block text-sm font-medium text-gray-700"
+                      className="mb-1 block text-sm font-medium"
                     >
                       Interest Rate
                     </label>
@@ -682,7 +706,7 @@ export default function CreateEvaluationPage() {
                   <div>
                     <label
                       htmlFor="loanTermHM"
-                      className="mb-1 block text-sm font-medium text-gray-700"
+                      className="mb-1 block text-sm font-medium"
                     >
                       Loan Term (months)
                     </label>

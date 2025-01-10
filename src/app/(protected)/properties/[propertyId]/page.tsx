@@ -35,12 +35,14 @@ const PropertyDetailPage = () => {
 
   const createEvaluation = api.evaluation.createEvaluation.useMutation({
     onSuccess: () => {
+      toast.success("Successfully created evaluation");
       utils.property.getPropertyById.invalidate();
     },
   });
 
   const deleteEvaluation = api.evaluation.deleteEvaluation.useMutation({
     onSuccess: () => {
+      toast.error("Unable to create evaluation");
       utils.property.getPropertyById.invalidate();
     },
   });
@@ -75,7 +77,7 @@ const PropertyDetailPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen p-4 sm:p-6 md:p-8">
       <div className="mx-auto max-w-7xl">
         <PropertyDetails property={property!} />
 
