@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { z } from 'zod';
+import { createTRPCRouter, protectedProcedure } from '../trpc';
 
 export const evaluationRouter = createTRPCRouter({
   createEvaluation: protectedProcedure
@@ -56,6 +56,52 @@ export const evaluationRouter = createTRPCRouter({
           appraisal: z.number(),
           propertyTax: z.number(),
           miscellaneous: z.number(),
+        }),
+        evaluationId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.evaluation.update({
+        where: { id: input.evaluationId },
+        data: input.data,
+      });
+    }),
+  updateConventionalFinancing: protectedProcedure
+    .input(
+      z.object({
+        data: z.object({
+          downPayment: z.number(),
+          loanTerm: z.number(),
+          interestRate: z.number(),
+          lenderFees: z.number(),
+          monthsOfTaxes: z.number(),
+          mortgageInsurance: z.number(),
+        }),
+        evaluationId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.evaluation.update({
+        where: { id: input.evaluationId },
+        data: input.data,
+      });
+    }),
+  updateHardMoneyFinancing: protectedProcedure
+    .input(
+      z.object({
+        data: z.object({
+          hardLoanToValue: z.number(),
+          hardLenderFees: z.number(),
+          hardInterestRate: z.number(),
+          hardMonthsToRefi: z.number(),
+          hardRollInLenderFees: z.boolean(),
+          hardWeeksUntilLeased: z.number(),
+          refiLoanToValue: z.number(),
+          refiLoanTerm: z.number(),
+          refiInterestRate: z.number(),
+          refiLenderFees: z.number(),
+          refiMonthsOfTaxes: z.number(),
+          refiMortgageInsurance: z.number(),
         }),
         evaluationId: z.string(),
       }),
