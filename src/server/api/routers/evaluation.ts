@@ -38,4 +38,32 @@ export const evaluationRouter = createTRPCRouter({
         where: { id: input.evaluationId },
       });
     }),
+  updateDealTerms: protectedProcedure
+    .input(
+      z.object({
+        data: z.object({
+          estimatedSalePrice: z.number(),
+          sellerContribution: z.number(),
+          repairsMakeReady: z.number(),
+          insuranceAnnually: z.number(),
+          rent: z.number(),
+          hardAppraisedPrice: z.number(),
+          survey: z.number(),
+          hoaAnnually: z.number(),
+          inspection: z.number(),
+          maxRefiCashback: z.number(),
+          purchasePrice: z.number(),
+          appraisal: z.number(),
+          propertyTaxAnnually: z.number(),
+          miscMonthly: z.number(),
+        }),
+        evaluationId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.evaluation.update({
+        where: { id: input.evaluationId },
+        data: input.data,
+      });
+    }),
 });

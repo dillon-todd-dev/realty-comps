@@ -76,7 +76,7 @@ export const propertyRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const property = await ctx.db.property.findUnique({
         where: { userId: ctx.user.userId!, id: input.propertyId },
-        include: { propertyDetail: true },
+        include: { propertyDetail: true, evaluations: true },
       });
       return property;
     }),

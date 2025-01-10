@@ -1,6 +1,17 @@
 "use client";
 
 import PropertyDetails from "@/app/_components/property-details";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
@@ -22,14 +33,15 @@ const PropertyDetailPage = () => {
     propertyId: propertyId as string,
   });
 
-  const { data: evaluations } = api.evaluation.getEvaluations.useQuery({
-    propertyId: propertyId as string,
+  const createEvaluation = api.evaluation.createEvaluation.useMutation({
+    onSuccess: () => {
+      utils.property.getPropertyById.invalidate();
+    },
   });
 
-  const createEvaluation = api.evaluation.createEvaluation.useMutation();
   const deleteEvaluation = api.evaluation.deleteEvaluation.useMutation({
     onSuccess: () => {
-      utils.evaluation.getEvaluations.invalidate();
+      utils.property.getPropertyById.invalidate();
     },
   });
 
@@ -83,9 +95,9 @@ const PropertyDetailPage = () => {
                 </span>
               </Button>
             </div>
-            {evaluations ? (
+            {property?.evaluations ? (
               <div className="space-y-4">
-                {evaluations.map((evaluation) => (
+                {property.evaluations.map((evaluation) => (
                   <Card key={evaluation.id}>
                     <CardContent className="p-4">
                       <div className="mb-2 flex items-center justify-between">
@@ -146,14 +158,32 @@ const PropertyDetailPage = () => {
                             Edit
                           </Link>
                         </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDeleteEvaluation(evaluation.id)}
-                        >
-                          <Trash className="mr-2 h-4 w-4" />
-                          Delete
-                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="outline" size="sm">
+                              <Trash className="mr-1 h-4 w-4" />
+                              Delete
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone!
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() =>
+                                  handleDeleteEvaluation(evaluation.id)
+                                }
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </CardContent>
                   </Card>

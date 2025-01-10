@@ -15,6 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 interface Property {
   id: number;
@@ -54,6 +55,7 @@ type DealTermsFormData = {
 const properties: Property[] = [];
 
 export default function CreateEvaluationPage() {
+  const utils = api.useUtils();
   const { evaluationId } = useParams();
   if (!evaluationId) {
     return notFound();
@@ -63,11 +65,29 @@ export default function CreateEvaluationPage() {
     evaluationId: evaluationId as string,
   });
 
+  const updateDealTerms = api.evaluation.updateDealTerms.useMutation();
+
   const dealTermsForm = useForm<DealTermsFormData>();
   const conventionalFinancingForm = useForm<ConventionalFinancingFormData>();
 
   const handleDealTermsSubmit = (dealTermsData: DealTermsFormData) => {
-    console.log(dealTermsData);
+    updateDealTerms.mutate(
+      {
+        data: dealTermsData,
+        evaluationId: evaluation?.id!,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Successfully updated deal terms");
+          utils.evaluation.getEvaluationById.invalidate({
+            evaluationId: evaluationId as string,
+          });
+        },
+        onError: () => {
+          toast.error("Unable to update deal terms");
+        },
+      },
+    );
   };
 
   const handleConventionalFinancingSubmit = (
