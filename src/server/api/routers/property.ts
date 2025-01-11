@@ -1,7 +1,7 @@
-import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { getPropertyDetails, getPropertyImages } from "@/lib/zillow";
-import { skip } from "node:test";
+import { z } from 'zod';
+import { createTRPCRouter, protectedProcedure } from '../trpc';
+import { getPropertyDetails, getPropertyImages } from '@/lib/zillow';
+import { skip } from 'node:test';
 
 export const propertyRouter = createTRPCRouter({
   createProperty: protectedProcedure

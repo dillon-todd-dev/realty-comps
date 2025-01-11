@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { api } from "@/trpc/react";
-import { Evaluation } from "@prisma/client";
-import { ChevronDown, Loader2 } from "lucide-react";
-import { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+} from '@/components/ui/collapsible';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { api } from '@/trpc/react';
+import { Evaluation } from '@prisma/client';
+import { ChevronDown, Loader2 } from 'lucide-react';
+import { useEffect, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 type Props = {
   evaluation: Evaluation;
@@ -122,13 +122,13 @@ const HardMoneyFinancing = ({
       },
       {
         onSuccess: () => {
-          toast.success("Successfully updated hard money financing terms");
+          toast.success('Successfully updated hard money financing terms');
           utils.evaluation.getEvaluationById.invalidate({
             evaluationId: evaluation.id,
           });
         },
         onError: () => {
-          toast.error("Unable to update hard money financing terms");
+          toast.error('Unable to update hard money financing terms');
         },
       },
     );
@@ -145,7 +145,7 @@ const HardMoneyFinancing = ({
   const propertyTax: string = useMemo(() => {
     const annualPropertyTax = Number(evaluation?.propertyTax);
     if (annualPropertyTax === 0) {
-      return "0";
+      return '0';
     }
     const monthlyPropertyTax = annualPropertyTax / 12;
     return monthlyPropertyTax.toLocaleString();
@@ -154,7 +154,7 @@ const HardMoneyFinancing = ({
   const propertyInsurance: string = useMemo(() => {
     const annualInsurance = Number(evaluation?.insurance);
     if (annualInsurance === 0) {
-      return "0";
+      return '0';
     }
     const monthlyInsurance = annualInsurance / 12;
     return monthlyInsurance.toLocaleString();
@@ -163,7 +163,7 @@ const HardMoneyFinancing = ({
   const mortgageInsurance: string = useMemo(() => {
     const annualInsurance = Number(evaluation?.refiMortgageInsurance);
     if (annualInsurance === 0) {
-      return "0";
+      return '0';
     }
     const monthlyInsurance = annualInsurance / 12;
     return monthlyInsurance.toLocaleString();
@@ -172,7 +172,7 @@ const HardMoneyFinancing = ({
   const hoa: string = useMemo(() => {
     const annualHoa = Number(evaluation?.hoa);
     if (annualHoa === 0) {
-      return "0";
+      return '0';
     }
     const monthlyHoa = annualHoa / 12;
     return monthlyHoa.toLocaleString();
@@ -187,8 +187,8 @@ const HardMoneyFinancing = ({
     const misc = Number(evaluation?.miscellaneous);
     const total = rent - propTax - propIns - propHoa - mortIns - misc;
     return total <= 0
-      ? "-$" + total.toLocaleString()
-      : "$" + total.toLocaleString();
+      ? '-$' + total.toLocaleString()
+      : '$' + total.toLocaleString();
   }, [
     evaluation?.rent,
     propertyTax,
@@ -202,176 +202,176 @@ const HardMoneyFinancing = ({
     <Collapsible
       open={hardMoneyOpen}
       onOpenChange={setHardMoneyOpen}
-      className="w-full"
+      className='w-full'
     >
       <CollapsibleTrigger asChild>
-        <Card className="w-full cursor-pointer border-sidebar-border bg-sidebar">
-          <CardHeader className="flex flex-row items-center justify-between">
+        <Card className='w-full cursor-pointer border-sidebar-border bg-sidebar'>
+          <CardHeader className='flex flex-row items-center justify-between'>
             <CardTitle>Hard Money Financing</CardTitle>
             <ChevronDown
               className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${
-                hardMoneyOpen ? "rotate-180 transform" : ""
+                hardMoneyOpen ? 'rotate-180 transform' : ''
               }`}
             />
           </CardHeader>
         </Card>
       </CollapsibleTrigger>
-      <CollapsibleContent className="mt-2">
-        <Card className="mt-6 border-sidebar-border bg-sidebar">
-          <CardContent className="mt-6 space-y-6">
-            <Card className="border-sidebar-border bg-sidebar">
+      <CollapsibleContent className='mt-2'>
+        <Card className='mt-6 border-sidebar-border bg-sidebar'>
+          <CardContent className='mt-6 space-y-6'>
+            <Card className='border-sidebar-border bg-sidebar'>
               <CardContent>
                 <form
                   onSubmit={hardMoneyFinancingForm.handleSubmit(
                     handleHardMoneySubmit,
                   )}
-                  className="space-y-4 pt-10"
+                  className='space-y-4 pt-10'
                 >
-                  <div className="grid h-full grid-cols-1 gap-6 lg:grid-cols-2">
-                    <div className="h-full">
-                      <h3 className="mb-4 text-lg font-semibold">
+                  <div className='grid h-full grid-cols-1 gap-6 lg:grid-cols-2'>
+                    <div className='h-full'>
+                      <h3 className='mb-4 text-lg font-semibold'>
                         Hard Money Loan
                       </h3>
-                      <div className="space-y-4">
+                      <div className='space-y-4'>
                         <div>
-                          <label className="mb-1 block text-sm font-medium">
+                          <label className='mb-1 block text-sm font-medium'>
                             Loan to Value
                           </label>
                           <Input
                             {...hardMoneyFinancingForm.register(
-                              "hardLoanToValue",
+                              'hardLoanToValue',
                             )}
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium">
+                          <label className='mb-1 block text-sm font-medium'>
                             Lender & Title Fees
                           </label>
                           <Input
                             {...hardMoneyFinancingForm.register(
-                              "hardLenderFees",
+                              'hardLenderFees',
                             )}
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium">
+                          <label className='mb-1 block text-sm font-medium'>
                             Interest Rate (%)
                           </label>
                           <Input
                             {...hardMoneyFinancingForm.register(
-                              "hardInterestRate",
+                              'hardInterestRate',
                             )}
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium">
+                          <label className='mb-1 block text-sm font-medium'>
                             # Months to Refi
                           </label>
                           <Input
                             {...hardMoneyFinancingForm.register(
-                              "hardMonthsToRefi",
+                              'hardMonthsToRefi',
                             )}
                           />
                         </div>
-                        <div className="flex items-center">
+                        <div className='flex items-center'>
                           <Input
                             {...hardMoneyFinancingForm.register(
-                              "hardRollInLenderFees",
+                              'hardRollInLenderFees',
                             )}
-                            type="checkbox"
-                            className="mr-2 h-4 w-4"
+                            type='checkbox'
+                            className='mr-2 h-4 w-4'
                           />
-                          <label className="text-sm font-medium">
+                          <label className='text-sm font-medium'>
                             Roll in Lender Fees?
                           </label>
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium">
+                          <label className='mb-1 block text-sm font-medium'>
                             Weeks Until Leased
                           </label>
                           <Input
                             {...hardMoneyFinancingForm.register(
-                              "hardWeeksUntilLeased",
+                              'hardWeeksUntilLeased',
                             )}
                           />
                         </div>
                       </div>
                     </div>
-                    <div className="h-full">
-                      <h3 className="mb-4 text-lg font-semibold">
+                    <div className='h-full'>
+                      <h3 className='mb-4 text-lg font-semibold'>
                         Refinance Loan
                       </h3>
-                      <div className="space-y-4">
+                      <div className='space-y-4'>
                         <div>
-                          <label className="mb-1 block text-sm font-medium">
+                          <label className='mb-1 block text-sm font-medium'>
                             Loan to Value
                           </label>
                           <Input
                             {...hardMoneyFinancingForm.register(
-                              "refiLoanToValue",
+                              'refiLoanToValue',
                             )}
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium">
+                          <label className='mb-1 block text-sm font-medium'>
                             Loan Term (years)
                           </label>
                           <Input
-                            {...hardMoneyFinancingForm.register("refiLoanTerm")}
+                            {...hardMoneyFinancingForm.register('refiLoanTerm')}
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium">
+                          <label className='mb-1 block text-sm font-medium'>
                             Interest Rate (%)
                           </label>
                           <Input
                             {...hardMoneyFinancingForm.register(
-                              "refiInterestRate",
+                              'refiInterestRate',
                             )}
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium">
+                          <label className='mb-1 block text-sm font-medium'>
                             Lender & Title Fees
                           </label>
                           <Input
                             {...hardMoneyFinancingForm.register(
-                              "refiLenderFees",
+                              'refiLenderFees',
                             )}
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium">
+                          <label className='mb-1 block text-sm font-medium'>
                             # Months Tax & Ins
                           </label>
                           <Input
                             {...hardMoneyFinancingForm.register(
-                              "refiMonthsOfTaxes",
+                              'refiMonthsOfTaxes',
                             )}
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium">
+                          <label className='mb-1 block text-sm font-medium'>
                             Mortgage Ins. Annually
                           </label>
                           <Input
                             {...hardMoneyFinancingForm.register(
-                              "refiMortgageInsurance",
+                              'refiMortgageInsurance',
                             )}
                           />
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="mt-6 flex justify-end">
-                    <Button type="submit">
+                  <div className='mt-6 flex justify-end'>
+                    <Button type='submit'>
                       <span>
                         {updateHardMoneyFinancing.isPending ? (
-                          <div className="animate-spin">
+                          <div className='animate-spin'>
                             <Loader2 />
                           </div>
                         ) : (
-                          "Update"
+                          'Update'
                         )}
                       </span>
                     </Button>
@@ -380,8 +380,8 @@ const HardMoneyFinancing = ({
               </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-              <Card className="border-sidebar-border bg-sidebar">
+            <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
+              <Card className='border-sidebar-border bg-sidebar'>
                 <CardHeader>
                   <CardTitle>Gains And Returns</CardTitle>
                 </CardHeader>
@@ -389,34 +389,34 @@ const HardMoneyFinancing = ({
                   <Table>
                     <TableBody>
                       <TableRow>
-                        <TableCell className="font-medium">
+                        <TableCell className='font-medium'>
                           Equity Capture
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className='text-right'>
                           ${gainsAndReturns.equityCapture.toLocaleString()}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">
+                        <TableCell className='font-medium'>
                           Annual Cash Flow
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className='text-right'>
                           ${gainsAndReturns.annualCashFlow.toLocaleString()}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">
+                        <TableCell className='font-medium'>
                           Return On Equity Capture
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className='text-right'>
                           {gainsAndReturns.returnOnEquityCapture}%
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">
+                        <TableCell className='font-medium'>
                           Cash On Cash Return
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className='text-right'>
                           {gainsAndReturns.cashOnCashReturn}%
                         </TableCell>
                       </TableRow>
@@ -425,7 +425,7 @@ const HardMoneyFinancing = ({
                 </CardContent>
               </Card>
 
-              <Card className="border-sidebar-border bg-sidebar">
+              <Card className='border-sidebar-border bg-sidebar'>
                 <CardHeader>
                   <CardTitle>Cash Out Of Pocket</CardTitle>
                 </CardHeader>
@@ -433,38 +433,38 @@ const HardMoneyFinancing = ({
                   <Table>
                     <TableBody>
                       <TableRow>
-                        <TableCell className="font-medium">
+                        <TableCell className='font-medium'>
                           Hard cash to close
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className='text-right'>
                           ${hardCashToClose}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">
+                        <TableCell className='font-medium'>
                           Closing Costs
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className='text-right'>
                           ${cashOutOfPocket.closingCosts.toLocaleString()}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">
+                        <TableCell className='font-medium'>
                           Prepaid Expenses
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className='text-right'>
                           ${cashOutOfPocket.prepaidExpenses.toLocaleString()}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">Repairs</TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className='font-medium'>Repairs</TableCell>
+                        <TableCell className='text-right'>
                           ${cashOutOfPocket.repairs.toLocaleString()}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">TOTAL</TableCell>
-                        <TableCell className="text-right font-bold">
+                        <TableCell className='font-medium'>TOTAL</TableCell>
+                        <TableCell className='text-right font-bold'>
                           ${cashOutOfPocket.total.toLocaleString()}
                         </TableCell>
                       </TableRow>
@@ -473,7 +473,7 @@ const HardMoneyFinancing = ({
                 </CardContent>
               </Card>
 
-              <Card className="border-sidebar-border bg-sidebar">
+              <Card className='border-sidebar-border bg-sidebar'>
                 <CardHeader>
                   <CardTitle>Cash Flow</CardTitle>
                 </CardHeader>
@@ -481,60 +481,60 @@ const HardMoneyFinancing = ({
                   <Table>
                     <TableBody>
                       <TableRow>
-                        <TableCell className="font-medium">
+                        <TableCell className='font-medium'>
                           Monthly Rent
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className='text-right'>
                           ${Number(evaluation?.rent).toLocaleString()}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">
+                        <TableCell className='font-medium'>
                           Note Payment
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className='text-right'>
                           -${cashFlow.notePayment.toLocaleString()}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">
+                        <TableCell className='font-medium'>
                           Property Tax
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className='text-right'>
                           -${propertyTax}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">
+                        <TableCell className='font-medium'>
                           Property Ins.
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className='text-right'>
                           -${propertyInsurance}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">
+                        <TableCell className='font-medium'>
                           Mortgage Ins.
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className='text-right'>
                           -${mortgageInsurance}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">HOA</TableCell>
-                        <TableCell className="text-right">-${hoa}</TableCell>
+                        <TableCell className='font-medium'>HOA</TableCell>
+                        <TableCell className='text-right'>-${hoa}</TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">
+                        <TableCell className='font-medium'>
                           Misc. Monthly
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className='text-right'>
                           -${Number(evaluation?.miscellaneous).toLocaleString()}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">TOTAL</TableCell>
-                        <TableCell className="text-right font-bold">
+                        <TableCell className='font-medium'>TOTAL</TableCell>
+                        <TableCell className='text-right font-bold'>
                           {cashflowTotal}
                         </TableCell>
                       </TableRow>
