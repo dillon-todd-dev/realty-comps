@@ -161,13 +161,13 @@ const HardMoneyFinancing = ({
   }, [evaluation?.insurance]);
 
   const mortgageInsurance: string = useMemo(() => {
-    const annualInsurance = Number(evaluation?.mortgageInsurance);
+    const annualInsurance = Number(evaluation?.refiMortgageInsurance);
     if (annualInsurance === 0) {
       return "0";
     }
     const monthlyInsurance = annualInsurance / 12;
     return monthlyInsurance.toLocaleString();
-  }, [evaluation?.mortgageInsurance]);
+  }, [evaluation?.refiMortgageInsurance]);
 
   const hoa: string = useMemo(() => {
     const annualHoa = Number(evaluation?.hoa);
@@ -186,7 +186,9 @@ const HardMoneyFinancing = ({
     const propHoa = Number(hoa);
     const misc = Number(evaluation?.miscellaneous);
     const total = rent - propTax - propIns - propHoa - mortIns - misc;
-    return total.toLocaleString();
+    return total <= 0
+      ? "-$" + total.toLocaleString()
+      : "$" + total.toLocaleString();
   }, [
     evaluation?.rent,
     propertyTax,
@@ -533,7 +535,7 @@ const HardMoneyFinancing = ({
                       <TableRow>
                         <TableCell className="font-medium">TOTAL</TableCell>
                         <TableCell className="text-right font-bold">
-                          ${cashflowTotal}
+                          {cashflowTotal}
                         </TableCell>
                       </TableRow>
                     </TableBody>

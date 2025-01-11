@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { api } from "@/trpc/react";
 import { Evaluation } from "@prisma/client";
 import { ChevronDown, Loader2 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -111,6 +111,62 @@ const ConventionalFinancing = ({
       },
     );
   };
+
+  const propertyTax: string = useMemo(() => {
+    const annualPropertyTax = Number(evaluation?.propertyTax);
+    if (annualPropertyTax === 0) {
+      return "0";
+    }
+    const monthlyPropertyTax = annualPropertyTax / 12;
+    return monthlyPropertyTax.toLocaleString();
+  }, [evaluation?.propertyTax]);
+
+  const propertyInsurance: string = useMemo(() => {
+    const annualInsurance = Number(evaluation?.insurance);
+    if (annualInsurance === 0) {
+      return "0";
+    }
+    const monthlyInsurance = annualInsurance / 12;
+    return monthlyInsurance.toLocaleString();
+  }, [evaluation?.insurance]);
+
+  const mortgageInsurance: string = useMemo(() => {
+    const annualInsurance = Number(evaluation?.refiMortgageInsurance);
+    if (annualInsurance === 0) {
+      return "0";
+    }
+    const monthlyInsurance = annualInsurance / 12;
+    return monthlyInsurance.toLocaleString();
+  }, [evaluation?.refiMortgageInsurance]);
+
+  const hoa: string = useMemo(() => {
+    const annualHoa = Number(evaluation?.hoa);
+    if (annualHoa === 0) {
+      return "0";
+    }
+    const monthlyHoa = annualHoa / 12;
+    return monthlyHoa.toLocaleString();
+  }, [evaluation?.hoa]);
+
+  const cashflowTotal: string = useMemo(() => {
+    const rent = Number(evaluation?.rent);
+    const propTax = Number(propertyTax);
+    const propIns = Number(propertyInsurance);
+    const mortIns = Number(mortgageInsurance);
+    const propHoa = Number(hoa);
+    const misc = Number(evaluation?.miscellaneous);
+    const total = rent - propTax - propIns - propHoa - mortIns - misc;
+    return total <= 0
+      ? "-$" + total.toLocaleString()
+      : "$" + total.toLocaleString();
+  }, [
+    evaluation?.rent,
+    propertyTax,
+    propertyInsurance,
+    mortgageInsurance,
+    hoa,
+    evaluation?.miscellaneous,
+  ]);
 
   return (
     <Collapsible
@@ -315,7 +371,7 @@ const ConventionalFinancing = ({
                           Monthly Rent
                         </TableCell>
                         <TableCell className="text-right">
-                          ${cashFlow.monthlyRent.toLocaleString()}
+                          ${Number(evaluation?.rent).toLocaleString()}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -323,7 +379,7 @@ const ConventionalFinancing = ({
                           Note Payment
                         </TableCell>
                         <TableCell className="text-right">
-                          ${cashFlow.notePayment.toLocaleString()}
+                          -${cashFlow.notePayment.toLocaleString()}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -331,7 +387,7 @@ const ConventionalFinancing = ({
                           Property Tax
                         </TableCell>
                         <TableCell className="text-right">
-                          ${cashFlow.propertyTax.toLocaleString()}
+                          -${propertyTax}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -339,7 +395,7 @@ const ConventionalFinancing = ({
                           Property Ins.
                         </TableCell>
                         <TableCell className="text-right">
-                          ${cashFlow.propertyIns.toLocaleString()}
+                          -${propertyInsurance}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -347,27 +403,28 @@ const ConventionalFinancing = ({
                           Mortgage Ins.
                         </TableCell>
                         <TableCell className="text-right">
-                          ${cashFlow.mortgageIns.toLocaleString()}
+                          -$
+                          {Number(
+                            evaluation?.mortgageInsurance,
+                          ).toLocaleString()}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">HOA</TableCell>
-                        <TableCell className="text-right">
-                          ${cashFlow.hoa.toLocaleString()}
-                        </TableCell>
+                        <TableCell className="text-right">-${hoa}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">
                           Misc. Monthly
                         </TableCell>
                         <TableCell className="text-right">
-                          ${cashFlow.miscellaneous.toLocaleString()}
+                          -${Number(evaluation?.miscellaneous).toLocaleString()}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">TOTAL</TableCell>
                         <TableCell className="text-right font-bold">
-                          ${cashFlow.total.toLocaleString()}
+                          {cashflowTotal}
                         </TableCell>
                       </TableRow>
                     </TableBody>
