@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { api } from '@/trpc/react';
-import { Evaluation } from '@prisma/client';
-import { Loader2 } from 'lucide-react';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { api } from "@/trpc/react";
+import { Evaluation } from "@prisma/client";
+import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 type DealTermsFormData = {
   estimatedSalePrice: number;
@@ -80,119 +80,119 @@ const DealTerms = ({ evaluation }: Props) => {
       },
       {
         onSuccess: () => {
-          toast.success('Successfully updated deal terms');
+          toast.success("Successfully updated deal terms");
           utils.evaluation.getEvaluationById.invalidate({
             evaluationId: evaluation.id,
           });
         },
         onError: () => {
-          toast.error('Unable to update deal terms');
+          toast.error("Unable to update deal terms");
         },
       },
     );
   };
 
   return (
-    <Card>
+    <Card className="border-sidebar-border bg-sidebar">
       <CardHeader>
         <CardTitle>Deal terms, expenses, revenue</CardTitle>
       </CardHeader>
       <CardContent>
         <form
           onSubmit={dealTermsForm.handleSubmit(handleDealTermsSubmit)}
-          className='space-y-4'
+          className="space-y-4"
         >
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className='mb-1 block text-sm font-medium'>
+              <label className="mb-1 block text-sm font-medium">
                 Estimated Sale Price
               </label>
-              <Input {...dealTermsForm.register('estimatedSalePrice')} />
+              <Input {...dealTermsForm.register("estimatedSalePrice")} />
             </div>
             <div>
-              <label className='mb-1 block text-sm font-medium'>
+              <label className="mb-1 block text-sm font-medium">
                 Seller Contribution
               </label>
-              <Input {...dealTermsForm.register('sellerContribution')} />
+              <Input {...dealTermsForm.register("sellerContribution")} />
             </div>
             <div>
-              <label className='mb-1 block text-sm font-medium'>
+              <label className="mb-1 block text-sm font-medium">
                 Repairs & Make-ready
               </label>
-              <Input {...dealTermsForm.register('repairs')} />
+              <Input {...dealTermsForm.register("repairs")} />
             </div>
             <div>
-              <label className='mb-1 block text-sm font-medium'>
+              <label className="mb-1 block text-sm font-medium">
                 Insurance Annually
               </label>
-              <Input {...dealTermsForm.register('insurance')} />
+              <Input {...dealTermsForm.register("insurance")} />
             </div>
             <div>
-              <label className='mb-1 block text-sm font-medium'>Rent</label>
-              <Input {...dealTermsForm.register('rent')} />
+              <label className="mb-1 block text-sm font-medium">Rent</label>
+              <Input {...dealTermsForm.register("rent")} />
             </div>
             <div>
-              <label className='mb-1 block text-sm font-medium'>
+              <label className="mb-1 block text-sm font-medium">
                 Hard Appraised Price
               </label>
-              <Input {...dealTermsForm.register('hardAppraisedPrice')} />
+              <Input {...dealTermsForm.register("hardAppraisedPrice")} />
             </div>
             <div>
-              <label className='mb-1 block text-sm font-medium'>Survey</label>
-              <Input {...dealTermsForm.register('survey')} />
+              <label className="mb-1 block text-sm font-medium">Survey</label>
+              <Input {...dealTermsForm.register("survey")} />
             </div>
             <div>
-              <label className='mb-1 block text-sm font-medium'>
+              <label className="mb-1 block text-sm font-medium">
                 HOA Annually
               </label>
-              <Input {...dealTermsForm.register('hoa')} />
+              <Input {...dealTermsForm.register("hoa")} />
             </div>
             <div>
-              <label className='mb-1 block text-sm font-medium'>
+              <label className="mb-1 block text-sm font-medium">
                 Inspection
               </label>
-              <Input {...dealTermsForm.register('inspection')} />
+              <Input {...dealTermsForm.register("inspection")} />
             </div>
             <div>
-              <label className='mb-1 block text-sm font-medium'>
+              <label className="mb-1 block text-sm font-medium">
                 Max Refi Cashback
               </label>
-              <Input {...dealTermsForm.register('maxRefiCashback')} />
+              <Input {...dealTermsForm.register("maxRefiCashback")} />
             </div>
             <div>
-              <label className='mb-1 block text-sm font-medium'>
+              <label className="mb-1 block text-sm font-medium">
                 Purchase Price
               </label>
-              <Input {...dealTermsForm.register('purchasePrice')} />
+              <Input {...dealTermsForm.register("purchasePrice")} />
             </div>
             <div>
-              <label className='mb-1 block text-sm font-medium'>
+              <label className="mb-1 block text-sm font-medium">
                 Appraisal
               </label>
-              <Input {...dealTermsForm.register('appraisal')} />
+              <Input {...dealTermsForm.register("appraisal")} />
             </div>
             <div>
-              <label className='mb-1 block text-sm font-medium'>
+              <label className="mb-1 block text-sm font-medium">
                 Property Tax Annually
               </label>
-              <Input {...dealTermsForm.register('propertyTax')} />
+              <Input {...dealTermsForm.register("propertyTax")} />
             </div>
             <div>
-              <label className='mb-1 block text-sm font-medium'>
+              <label className="mb-1 block text-sm font-medium">
                 Misc. Monthly
               </label>
-              <Input {...dealTermsForm.register('miscellaneous')} />
+              <Input {...dealTermsForm.register("miscellaneous")} />
             </div>
           </div>
-          <div className='mt-6 flex justify-end space-x-4'>
-            <Button type='submit'>
+          <div className="mt-6 flex justify-end space-x-4">
+            <Button type="submit">
               <span>
                 {updateDealTerms.isPending ? (
-                  <div className='animate-spin'>
+                  <div className="animate-spin">
                     <Loader2 />
                   </div>
                 ) : (
-                  'Update'
+                  "Update"
                 )}
               </span>
             </Button>

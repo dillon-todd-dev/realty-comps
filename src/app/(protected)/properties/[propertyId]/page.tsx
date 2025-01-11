@@ -1,6 +1,6 @@
 "use client";
 
-import PropertyDetails from "@/app/_components/property-details";
+import PropertyDetails from "@/app/_components/properties/property-details";
 import {
   AlertDialog,
   AlertDialogAction,

@@ -1,15 +1,20 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
-import { api } from '@/trpc/react';
-import { Evaluation } from '@prisma/client';
-import { Loader2 } from 'lucide-react';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { api } from "@/trpc/react";
+import { Evaluation } from "@prisma/client";
+import { ChevronDown, Loader2 } from "lucide-react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 type ConventionalFinancingFormData = {
   downPayment: number;
@@ -49,9 +54,15 @@ const cashFlow = {
 
 type Props = {
   evaluation: Evaluation;
+  conventionalMoneyOpen: boolean;
+  setConventionalMoneyOpen: (open: boolean) => void;
 };
 
-const ConventionalFinancing = ({ evaluation }: Props) => {
+const ConventionalFinancing = ({
+  evaluation,
+  conventionalMoneyOpen,
+  setConventionalMoneyOpen,
+}: Props) => {
   const utils = api.useUtils();
   const conventionalFinancingForm = useForm<ConventionalFinancingFormData>();
   const updateConventionalFinancing =
@@ -89,248 +100,285 @@ const ConventionalFinancing = ({ evaluation }: Props) => {
       },
       {
         onSuccess: () => {
-          toast.success('Successfully updated conventional financing terms');
+          toast.success("Successfully updated conventional financing terms");
           utils.evaluation.getEvaluationById.invalidate({
             evaluationId: evaluation.id,
           });
         },
         onError: () => {
-          toast.error('Unable to update conventional financing terms');
+          toast.error("Unable to update conventional financing terms");
         },
       },
     );
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Conventional Financing</CardTitle>
-      </CardHeader>
-      <CardContent className='space-y-6'>
-        <Card>
-          <CardContent>
-            <form
-              onSubmit={conventionalFinancingForm.handleSubmit(
-                handleConventionalFinancingSubmit,
-              )}
-              className='space-y-4 pt-10'
-            >
-              <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
-                <div>
-                  <label className='mb-1 block text-sm font-medium'>
-                    Down Payment
-                  </label>
-                  <Input
-                    {...conventionalFinancingForm.register('downPayment')}
-                  />
-                </div>
-                <div>
-                  <label className='mb-1 block text-sm font-medium'>
-                    Loan Term (years)
-                  </label>
-                  <Input {...conventionalFinancingForm.register('loanTerm')} />
-                </div>
-                <div>
-                  <label className='mb-1 block text-sm font-medium'>
-                    Interest Rate (%)
-                  </label>
-                  <Input
-                    {...conventionalFinancingForm.register('interestRate')}
-                  />
-                </div>
-                <div>
-                  <label className='mb-1 block text-sm font-medium'>
-                    Lender & Title Fees
-                  </label>
-                  <Input
-                    {...conventionalFinancingForm.register('lenderFees')}
-                  />
-                </div>
-                <div>
-                  <label className='mb-1 block text-sm font-medium'>
-                    # Months Tax & Ins
-                  </label>
-                  <Input
-                    {...conventionalFinancingForm.register('monthsOfTaxes')}
-                  />
-                </div>
-                <div>
-                  <label className='mb-1 block text-sm font-medium'>
-                    Mortgage Ins. Annually
-                  </label>
-                  <Input
-                    {...conventionalFinancingForm.register('mortgageInsurance')}
-                  />
-                </div>
-              </div>
-              <div className='flex justify-end'>
-                <Button type='submit'>
-                  <span>
-                    {updateConventionalFinancing.isPending ? (
-                      <div className='animate-spin'>
-                        <Loader2 />
-                      </div>
-                    ) : (
-                      'Update'
-                    )}
-                  </span>
-                </Button>
-              </div>
-            </form>
+    <Collapsible
+      open={conventionalMoneyOpen}
+      onOpenChange={setConventionalMoneyOpen}
+      className="w-full"
+    >
+      <CollapsibleTrigger asChild>
+        <Card className="w-full cursor-pointer border-sidebar-border bg-sidebar">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Conventional Financing</CardTitle>
+            <ChevronDown
+              className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${
+                conventionalMoneyOpen ? "rotate-180 transform" : ""
+              }`}
+            />
+          </CardHeader>
+        </Card>
+      </CollapsibleTrigger>
+      <CollapsibleContent className="mt-2">
+        <Card className="border-sidebar-border bg-sidebar">
+          <CardContent className="mt-4 space-y-6">
+            <Card className="border-sidebar-border bg-sidebar">
+              <CardContent>
+                <form
+                  onSubmit={conventionalFinancingForm.handleSubmit(
+                    handleConventionalFinancingSubmit,
+                  )}
+                  className="space-y-4 pt-10"
+                >
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">
+                        Down Payment
+                      </label>
+                      <Input
+                        {...conventionalFinancingForm.register("downPayment")}
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">
+                        Loan Term (years)
+                      </label>
+                      <Input
+                        {...conventionalFinancingForm.register("loanTerm")}
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">
+                        Interest Rate (%)
+                      </label>
+                      <Input
+                        {...conventionalFinancingForm.register("interestRate")}
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">
+                        Lender & Title Fees
+                      </label>
+                      <Input
+                        {...conventionalFinancingForm.register("lenderFees")}
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">
+                        # Months Tax & Ins
+                      </label>
+                      <Input
+                        {...conventionalFinancingForm.register("monthsOfTaxes")}
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">
+                        Mortgage Ins. Annually
+                      </label>
+                      <Input
+                        {...conventionalFinancingForm.register(
+                          "mortgageInsurance",
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end">
+                    <Button type="submit">
+                      <span>
+                        {updateConventionalFinancing.isPending ? (
+                          <div className="animate-spin">
+                            <Loader2 />
+                          </div>
+                        ) : (
+                          "Update"
+                        )}
+                      </span>
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              <Card className="border-sidebar-border bg-sidebar">
+                <CardHeader>
+                  <CardTitle>Gains And Returns</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          Equity Capture
+                        </TableCell>
+                        <TableCell className="text-right">
+                          ${gainsAndReturns.equityCapture.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          Annual Cash Flow
+                        </TableCell>
+                        <TableCell className="text-right">
+                          ${gainsAndReturns.annualCashFlow.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          Return On Equity Capture
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {gainsAndReturns.returnOnEquityCapture}%
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          Cash On Cash Return
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {gainsAndReturns.cashOnCashReturn}%
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+
+              <Card className="border-sidebar-border bg-sidebar">
+                <CardHeader>
+                  <CardTitle>Cash Out Of Pocket</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          Down Payment
+                        </TableCell>
+                        <TableCell className="text-right">
+                          ${cashOutOfPocket.downPayment.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          Closing Costs
+                        </TableCell>
+                        <TableCell className="text-right">
+                          ${cashOutOfPocket.closingCosts.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          Prepaid Expenses
+                        </TableCell>
+                        <TableCell className="text-right">
+                          ${cashOutOfPocket.prepaidExpenses.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">Repairs</TableCell>
+                        <TableCell className="text-right">
+                          ${cashOutOfPocket.repairs.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">TOTAL</TableCell>
+                        <TableCell className="text-right font-bold">
+                          ${cashOutOfPocket.total.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+
+              <Card className="border-sidebar-border bg-sidebar">
+                <CardHeader>
+                  <CardTitle>Cash Flow</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          Monthly Rent
+                        </TableCell>
+                        <TableCell className="text-right">
+                          ${cashFlow.monthlyRent.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          Note Payment
+                        </TableCell>
+                        <TableCell className="text-right">
+                          ${cashFlow.notePayment.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          Property Tax
+                        </TableCell>
+                        <TableCell className="text-right">
+                          ${cashFlow.propertyTax.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          Property Ins.
+                        </TableCell>
+                        <TableCell className="text-right">
+                          ${cashFlow.propertyIns.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          Mortgage Ins.
+                        </TableCell>
+                        <TableCell className="text-right">
+                          ${cashFlow.mortgageIns.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">HOA</TableCell>
+                        <TableCell className="text-right">
+                          ${cashFlow.hoa.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          Misc. Monthly
+                        </TableCell>
+                        <TableCell className="text-right">
+                          ${cashFlow.miscellaneous.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">TOTAL</TableCell>
+                        <TableCell className="text-right font-bold">
+                          ${cashFlow.total.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </div>
           </CardContent>
         </Card>
-
-        <div className='grid grid-cols-1 gap-6 md:grid-cols-3'>
-          <Card>
-            <CardHeader>
-              <CardTitle>Gains And Returns</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell className='font-medium'>
-                      Equity Capture
-                    </TableCell>
-                    <TableCell className='text-right'>
-                      ${gainsAndReturns.equityCapture.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>
-                      Annual Cash Flow
-                    </TableCell>
-                    <TableCell className='text-right'>
-                      ${gainsAndReturns.annualCashFlow.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>
-                      Return On Equity Capture
-                    </TableCell>
-                    <TableCell className='text-right'>
-                      {gainsAndReturns.returnOnEquityCapture}%
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>
-                      Cash On Cash Return
-                    </TableCell>
-                    <TableCell className='text-right'>
-                      {gainsAndReturns.cashOnCashReturn}%
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Cash Out Of Pocket</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell className='font-medium'>Down Payment</TableCell>
-                    <TableCell className='text-right'>
-                      ${cashOutOfPocket.downPayment.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>Closing Costs</TableCell>
-                    <TableCell className='text-right'>
-                      ${cashOutOfPocket.closingCosts.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>
-                      Prepaid Expenses
-                    </TableCell>
-                    <TableCell className='text-right'>
-                      ${cashOutOfPocket.prepaidExpenses.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>Repairs</TableCell>
-                    <TableCell className='text-right'>
-                      ${cashOutOfPocket.repairs.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>TOTAL</TableCell>
-                    <TableCell className='text-right font-bold'>
-                      ${cashOutOfPocket.total.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Cash Flow</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell className='font-medium'>Monthly Rent</TableCell>
-                    <TableCell className='text-right'>
-                      ${cashFlow.monthlyRent.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>Note Payment</TableCell>
-                    <TableCell className='text-right'>
-                      ${cashFlow.notePayment.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>Property Tax</TableCell>
-                    <TableCell className='text-right'>
-                      ${cashFlow.propertyTax.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>Property Ins.</TableCell>
-                    <TableCell className='text-right'>
-                      ${cashFlow.propertyIns.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>Mortgage Ins.</TableCell>
-                    <TableCell className='text-right'>
-                      ${cashFlow.mortgageIns.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>HOA</TableCell>
-                    <TableCell className='text-right'>
-                      ${cashFlow.hoa.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>Misc. Monthly</TableCell>
-                    <TableCell className='text-right'>
-                      ${cashFlow.miscellaneous.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>TOTAL</TableCell>
-                    <TableCell className='text-right font-bold'>
-                      ${cashFlow.total.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </div>
-      </CardContent>
-    </Card>
+      </CollapsibleContent>
+    </Collapsible>
   );
 };
 
