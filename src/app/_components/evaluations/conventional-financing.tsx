@@ -42,17 +42,6 @@ const cashOutOfPocket = {
   total: 68000,
 };
 
-const cashFlow = {
-  monthlyRent: 2000,
-  notePayment: 1200,
-  propertyTax: 200,
-  propertyIns: 100,
-  mortgageIns: 50,
-  hoa: 0,
-  miscellaneous: 100,
-  total: 350,
-};
-
 type Props = {
   evaluation: Evaluation;
   conventionalMoneyOpen: boolean;
@@ -118,6 +107,24 @@ const ConventionalFinancing = ({
     const downPaymentPercent = Number(evaluation?.downPayment) / 100;
     return purchasePrice * downPaymentPercent;
   }, [evaluation?.purchasePrice, evaluation?.downPayment]);
+
+  const closingCosts: number = useMemo(() => {
+    const lenderFees = Number(evaluation?.lenderFees);
+    const survey = Number(evaluation?.survey);
+    const appraisal = Number(evaluation?.appraisal);
+    const inspection = Number(evaluation?.inspection);
+    return lenderFees + survey + appraisal + inspection;
+  }, [
+    evaluation?.lenderFees,
+    evaluation?.survey,
+    evaluation?.appraisal,
+    evaluation?.inspection,
+  ]);
+
+  const cashOutOfPocketTotal: number = useMemo(() => {
+    const repairs = Number(evaluation?.repairs);
+    return downPayment + closingCosts + repairs;
+  }, [downPayment, closingCosts, evaluation?.repairs]);
 
   const notePayment: number = useMemo(() => {
     const purchasePrice = Number(evaluation?.purchasePrice);
@@ -339,7 +346,7 @@ const ConventionalFinancing = ({
                           Closing Costs
                         </TableCell>
                         <TableCell className='text-right'>
-                          ${cashOutOfPocket.closingCosts.toLocaleString()}
+                          {formatDollarAmount(closingCosts)}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -359,7 +366,7 @@ const ConventionalFinancing = ({
                       <TableRow>
                         <TableCell className='font-bold'>TOTAL</TableCell>
                         <TableCell className='text-right font-bold'>
-                          ${cashOutOfPocket.total.toLocaleString()}
+                          {formatDollarAmount(cashOutOfPocketTotal)}
                         </TableCell>
                       </TableRow>
                     </TableBody>

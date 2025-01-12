@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { formatDollarAmount } from '@/lib/utils';
 import { api } from '@/trpc/react';
 import { Evaluation } from '@prisma/client';
 import { ChevronDown, Loader2 } from 'lucide-react';
@@ -134,61 +135,39 @@ const HardMoneyFinancing = ({
     );
   };
 
-  const hardCashToClose: string = useMemo(() => {
+  const hardCashToClose: number = useMemo(() => {
     const appraisal = Number(evaluation?.appraisal);
     const survey = Number(evaluation?.survey);
     const inspection = Number(evaluation?.inspection);
-    const total = appraisal + survey + inspection;
-    return total.toLocaleString();
+    return appraisal + survey + inspection;
   }, [evaluation?.appraisal, evaluation?.survey, evaluation?.inspection]);
 
-  const propertyTax: string = useMemo(() => {
+  const propertyTax: number = useMemo(() => {
     const annualPropertyTax = Number(evaluation?.propertyTax);
-    if (annualPropertyTax === 0) {
-      return '0';
-    }
-    const monthlyPropertyTax = annualPropertyTax / 12;
-    return monthlyPropertyTax.toLocaleString();
+    return annualPropertyTax / 12;
   }, [evaluation?.propertyTax]);
 
-  const propertyInsurance: string = useMemo(() => {
+  const propertyInsurance: number = useMemo(() => {
     const annualInsurance = Number(evaluation?.insurance);
-    if (annualInsurance === 0) {
-      return '0';
-    }
-    const monthlyInsurance = annualInsurance / 12;
-    return monthlyInsurance.toLocaleString();
+    return annualInsurance / 12;
   }, [evaluation?.insurance]);
 
-  const mortgageInsurance: string = useMemo(() => {
+  const mortgageInsurance: number = useMemo(() => {
     const annualInsurance = Number(evaluation?.refiMortgageInsurance);
-    if (annualInsurance === 0) {
-      return '0';
-    }
-    const monthlyInsurance = annualInsurance / 12;
-    return monthlyInsurance.toLocaleString();
+    return annualInsurance / 12;
   }, [evaluation?.refiMortgageInsurance]);
 
-  const hoa: string = useMemo(() => {
+  const hoa: number = useMemo(() => {
     const annualHoa = Number(evaluation?.hoa);
-    if (annualHoa === 0) {
-      return '0';
-    }
-    const monthlyHoa = annualHoa / 12;
-    return monthlyHoa.toLocaleString();
+    return annualHoa / 12;
   }, [evaluation?.hoa]);
 
-  const cashflowTotal: string = useMemo(() => {
+  const cashflowTotal: number = useMemo(() => {
     const rent = Number(evaluation?.rent);
-    const propTax = Number(propertyTax);
-    const propIns = Number(propertyInsurance);
-    const mortIns = Number(mortgageInsurance);
-    const propHoa = Number(hoa);
     const misc = Number(evaluation?.miscellaneous);
-    const total = rent - propTax - propIns - propHoa - mortIns - misc;
-    return total <= 0
-      ? '-$' + total.toLocaleString()
-      : '$' + total.toLocaleString();
+    return (
+      rent - propertyTax - propertyInsurance - hoa - mortgageInsurance - misc
+    );
   }, [
     evaluation?.rent,
     propertyTax,
@@ -459,7 +438,7 @@ const HardMoneyFinancing = ({
                       <TableRow>
                         <TableCell className='font-medium'>Repairs</TableCell>
                         <TableCell className='text-right'>
-                          ${cashOutOfPocket.repairs.toLocaleString()}
+                          {formatDollarAmount(Number(evaluation?.repairs))}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -485,7 +464,7 @@ const HardMoneyFinancing = ({
                           Monthly Rent
                         </TableCell>
                         <TableCell className='text-right'>
-                          ${Number(evaluation?.rent).toLocaleString()}
+                          {formatDollarAmount(Number(evaluation?.rent))}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -501,41 +480,46 @@ const HardMoneyFinancing = ({
                           Property Tax
                         </TableCell>
                         <TableCell className='text-right'>
-                          -${propertyTax}
+                          -{formatDollarAmount(propertyTax)}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className='font-medium'>
-                          Property Ins.
+                          Property Insurance
                         </TableCell>
                         <TableCell className='text-right'>
-                          -${propertyInsurance}
+                          -{formatDollarAmount(propertyInsurance)}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className='font-medium'>
-                          Mortgage Ins.
+                          Mortgage Insurance
                         </TableCell>
                         <TableCell className='text-right'>
-                          -${mortgageInsurance}
+                          -{formatDollarAmount(mortgageInsurance)}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className='font-medium'>HOA</TableCell>
-                        <TableCell className='text-right'>-${hoa}</TableCell>
+                        <TableCell className='text-right'>
+                          -{formatDollarAmount(hoa)}
+                        </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className='font-medium'>
                           Misc. Monthly
                         </TableCell>
                         <TableCell className='text-right'>
-                          -${Number(evaluation?.miscellaneous).toLocaleString()}
+                          -
+                          {formatDollarAmount(
+                            Number(evaluation?.miscellaneous),
+                          )}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className='font-medium'>TOTAL</TableCell>
                         <TableCell className='text-right font-bold'>
-                          {cashflowTotal}
+                          {formatDollarAmount(cashflowTotal)}
                         </TableCell>
                       </TableRow>
                     </TableBody>
