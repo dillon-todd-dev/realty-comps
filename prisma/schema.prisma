@@ -190,11 +190,11 @@ model TaxAssessment {
 
   year         Int
   value        Decimal
-  land         Decimal
-  improvements Decimal
+  land         Decimal?
+  improvements Decimal?
 
   propertyId String
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
   @@map("tax_assessments")
 }
@@ -208,7 +208,7 @@ model PropertyTax {
   total Decimal
 
   propertyId String
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
   @@map("property_taxes")
 }

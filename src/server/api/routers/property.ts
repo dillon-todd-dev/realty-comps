@@ -1,11 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import {
-  getPropertyDetails as zillowPropertyDetails,
-  getPropertyImages,
-  getPropertySaleComps,
-} from "@/lib/zillow";
-import { getPropertyDetails } from "@/lib/rent-cast";
+import { getPropertyDetails as getRentCastPropertyDetails } from "@/lib/rent-cast";
+import { getStreetViewImage } from "@/lib/google";
 
 export const propertyRouter = createTRPCRouter({
   createProperty: protectedProcedure
@@ -19,21 +15,22 @@ export const propertyRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const address = `${input.streetAddress}, ${input.city}, ${input.state}, ${input.postalCode}`;
-      const propertyDetails = await zillowPropertyDetails(address);
-      const propertyImages = await getPropertyImages(propertyDetails.zpid);
-      const rentCastProperties = await getPropertyDetails(address);
-      if (rentCastProperties.length < 0) return null;
+      const [propertyDetails, imageUrl] = await Promise.all([
+        getRentCastPropertyDetails(address),
+        getStreetViewImage(address),
+      ]);
+
       const property = await ctx.db.property.create({
         data: {
-          rentCastId: rentCastProperties[0].id,
-          bedrooms: rentCastProperties[0].bedrooms,
-          bathrooms: rentCastProperties[0].bathrooms,
-          lotSize: rentCastProperties[0].lotSize,
-          squareFootage: rentCastProperties[0].squareFootage,
-          yearBuilt: rentCastProperties[0].yearBuilt,
-          subdivision: rentCastProperties[0].subdivision,
-          legalDescription: rentCastProperties[0].legalDescription,
-          imageUrl: "/no-image-available.jpg",
+          rentCastId: propertyDetails[0].id,
+          bedrooms: propertyDetails[0].bedrooms,
+          bathrooms: propertyDetails[0].bathrooms,
+          lotSize: propertyDetails[0].lotSize,
+          squareFootage: propertyDetails[0].squareFootage,
+          yearBuilt: propertyDetails[0].yearBuilt,
+          subdivision: propertyDetails[0].subdivision,
+          legalDescription: propertyDetails[0].legalDescription,
+          imageUrl: imageUrl,
           user: {
             connect: {
               id: ctx.user.userId!,
@@ -41,23 +38,23 @@ export const propertyRouter = createTRPCRouter({
           },
           address: {
             create: {
-              street: rentCastProperties[0].addressLine1,
-              city: rentCastProperties[0].city,
-              state: rentCastProperties[0].state,
-              postalCode: rentCastProperties[0].zipCode,
-              county: rentCastProperties[0].county,
-              longitude: rentCastProperties[0].longitude,
-              latitude: rentCastProperties[0].latitude,
+              street: propertyDetails[0].addressLine1,
+              city: propertyDetails[0].city,
+              state: propertyDetails[0].state,
+              postalCode: propertyDetails[0].zipCode,
+              county: propertyDetails[0].county,
+              longitude: propertyDetails[0].longitude,
+              latitude: propertyDetails[0].latitude,
             },
           },
           taxAssessments: {
             createMany: {
-              data: Object.values(rentCastProperties[0].taxAssessments),
+              data: Object.values(propertyDetails[0].taxAssessments),
             },
           },
           propertyTaxes: {
             createMany: {
-              data: Object.values(rentCastProperties[0].propertyTaxes),
+              data: Object.values(propertyDetails[0].propertyTaxes),
             },
           },
         },
@@ -95,10 +92,5 @@ export const propertyRouter = createTRPCRouter({
         include: { evaluations: true, address: true },
       });
       return property;
-    }),
-  getSaleComps: protectedProcedure
-    .input(z.object({ zpid: z.number() }))
-    .query(async ({ ctx, input }) => {
-      const saleComps = await getPropertySaleComps(Number(input.zpid));
     }),
 });
