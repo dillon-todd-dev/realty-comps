@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { formatDollarAmount, monthlyLoanAmount } from '@/lib/utils';
 import { api } from '@/trpc/react';
 import { Evaluation } from '@prisma/client';
 import { ChevronDown, Loader2 } from 'lucide-react';
@@ -112,53 +113,59 @@ const ConventionalFinancing = ({
     );
   };
 
-  const propertyTax: string = useMemo(() => {
+  const downPayment: number = useMemo(() => {
+    const purchasePrice = Number(evaluation?.purchasePrice);
+    const downPaymentPercent = Number(evaluation?.downPayment) / 100;
+    return purchasePrice * downPaymentPercent;
+  }, [evaluation?.purchasePrice, evaluation?.downPayment]);
+
+  const notePayment: number = useMemo(() => {
+    const purchasePrice = Number(evaluation?.purchasePrice);
+    const downPaymentPercent = Number(evaluation?.downPayment) / 100;
+    const downPayment = purchasePrice * downPaymentPercent;
+    const loanAmount = purchasePrice - downPayment;
+    const monthlyInterestRate = Number(evaluation?.interestRate) / 100 / 12;
+    const loanTermMonths = Number(evaluation?.loanTerm) * 12;
+    return monthlyLoanAmount(loanTermMonths, monthlyInterestRate, loanAmount);
+  }, [
+    evaluation?.purchasePrice,
+    evaluation?.downPayment,
+    evaluation?.interestRate,
+    evaluation?.loanTerm,
+  ]);
+
+  const propertyTax: number = useMemo(() => {
     const annualPropertyTax = Number(evaluation?.propertyTax);
-    if (annualPropertyTax === 0) {
-      return '0';
-    }
-    const monthlyPropertyTax = annualPropertyTax / 12;
-    return monthlyPropertyTax.toLocaleString();
+    return annualPropertyTax / 12;
   }, [evaluation?.propertyTax]);
 
-  const propertyInsurance: string = useMemo(() => {
+  const propertyInsurance: number = useMemo(() => {
     const annualInsurance = Number(evaluation?.insurance);
-    if (annualInsurance === 0) {
-      return '0';
-    }
-    const monthlyInsurance = annualInsurance / 12;
-    return monthlyInsurance.toLocaleString();
+    return annualInsurance / 12;
   }, [evaluation?.insurance]);
 
-  const mortgageInsurance: string = useMemo(() => {
+  const mortgageInsurance: number = useMemo(() => {
     const annualInsurance = Number(evaluation?.refiMortgageInsurance);
-    if (annualInsurance === 0) {
-      return '0';
-    }
-    const monthlyInsurance = annualInsurance / 12;
-    return monthlyInsurance.toLocaleString();
+    return annualInsurance / 12;
   }, [evaluation?.refiMortgageInsurance]);
 
-  const hoa: string = useMemo(() => {
+  const hoa: number = useMemo(() => {
     const annualHoa = Number(evaluation?.hoa);
-    if (annualHoa === 0) {
-      return '0';
-    }
-    const monthlyHoa = annualHoa / 12;
-    return monthlyHoa.toLocaleString();
+    return annualHoa / 12;
   }, [evaluation?.hoa]);
 
-  const cashflowTotal: string = useMemo(() => {
+  const cashflowTotal: number = useMemo(() => {
     const rent = Number(evaluation?.rent);
-    const propTax = Number(propertyTax);
-    const propIns = Number(propertyInsurance);
-    const mortIns = Number(mortgageInsurance);
-    const propHoa = Number(hoa);
     const misc = Number(evaluation?.miscellaneous);
-    const total = rent - propTax - propIns - propHoa - mortIns - misc;
-    return total <= 0
-      ? '-$' + total.toLocaleString()
-      : '$' + total.toLocaleString();
+    return (
+      rent -
+      notePayment -
+      propertyTax -
+      propertyInsurance -
+      hoa -
+      mortgageInsurance -
+      misc
+    );
   }, [
     evaluation?.rent,
     propertyTax,
@@ -166,6 +173,7 @@ const ConventionalFinancing = ({
     mortgageInsurance,
     hoa,
     evaluation?.miscellaneous,
+    notePayment,
   ]);
 
   return (
@@ -323,7 +331,7 @@ const ConventionalFinancing = ({
                           Down Payment
                         </TableCell>
                         <TableCell className='text-right'>
-                          ${cashOutOfPocket.downPayment.toLocaleString()}
+                          {formatDollarAmount(downPayment)}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -345,11 +353,11 @@ const ConventionalFinancing = ({
                       <TableRow>
                         <TableCell className='font-medium'>Repairs</TableCell>
                         <TableCell className='text-right'>
-                          ${cashOutOfPocket.repairs.toLocaleString()}
+                          ${Number(evaluation?.repairs).toLocaleString()}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className='font-medium'>TOTAL</TableCell>
+                        <TableCell className='font-bold'>TOTAL</TableCell>
                         <TableCell className='text-right font-bold'>
                           ${cashOutOfPocket.total.toLocaleString()}
                         </TableCell>
@@ -371,7 +379,7 @@ const ConventionalFinancing = ({
                           Monthly Rent
                         </TableCell>
                         <TableCell className='text-right'>
-                          ${Number(evaluation?.rent).toLocaleString()}
+                          {formatDollarAmount(Number(evaluation?.rent))}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -379,7 +387,7 @@ const ConventionalFinancing = ({
                           Note Payment
                         </TableCell>
                         <TableCell className='text-right'>
-                          -${cashFlow.notePayment.toLocaleString()}
+                          -{formatDollarAmount(notePayment)}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -387,7 +395,7 @@ const ConventionalFinancing = ({
                           Property Tax
                         </TableCell>
                         <TableCell className='text-right'>
-                          -${propertyTax}
+                          -{formatDollarAmount(propertyTax)}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -395,7 +403,7 @@ const ConventionalFinancing = ({
                           Property Ins.
                         </TableCell>
                         <TableCell className='text-right'>
-                          -${propertyInsurance}
+                          -{formatDollarAmount(propertyInsurance)}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -403,28 +411,30 @@ const ConventionalFinancing = ({
                           Mortgage Ins.
                         </TableCell>
                         <TableCell className='text-right'>
-                          -$
-                          {Number(
-                            evaluation?.mortgageInsurance,
-                          ).toLocaleString()}
+                          -{formatDollarAmount(mortgageInsurance)}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className='font-medium'>HOA</TableCell>
-                        <TableCell className='text-right'>-${hoa}</TableCell>
+                        <TableCell className='text-right'>
+                          -{formatDollarAmount(hoa)}
+                        </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className='font-medium'>
                           Misc. Monthly
                         </TableCell>
                         <TableCell className='text-right'>
-                          -${Number(evaluation?.miscellaneous).toLocaleString()}
+                          -
+                          {formatDollarAmount(
+                            Number(evaluation?.miscellaneous),
+                          )}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className='font-medium'>TOTAL</TableCell>
+                        <TableCell className='font-bold'>TOTAL</TableCell>
                         <TableCell className='text-right font-bold'>
-                          {cashflowTotal}
+                          {formatDollarAmount(cashflowTotal)}
                         </TableCell>
                       </TableRow>
                     </TableBody>

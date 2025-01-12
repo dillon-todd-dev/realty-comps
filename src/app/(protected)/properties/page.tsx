@@ -43,7 +43,7 @@ const PropertiesPage = () => {
                   <h2 className='text-xl font-semibold'>
                     {property.address.street}
                   </h2>
-                  <p className='mt-2 text-gray-600'>
+                  <p className='mt-2'>
                     {property.address.city}, {property.address.state}{' '}
                     {property.address.postalCode}
                   </p>

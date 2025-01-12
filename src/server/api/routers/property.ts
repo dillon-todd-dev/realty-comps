@@ -1,7 +1,7 @@
-import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { getPropertyDetails as getRentCastPropertyDetails } from "@/lib/rent-cast";
-import { getStreetViewImage } from "@/lib/google";
+import { z } from 'zod';
+import { createTRPCRouter, protectedProcedure } from '../trpc';
+import { getPropertyDetails as getRentCastPropertyDetails } from '@/lib/rent-cast';
+import { getStreetViewImage } from '@/lib/google';
 
 export const propertyRouter = createTRPCRouter({
   createProperty: protectedProcedure
@@ -59,7 +59,6 @@ export const propertyRouter = createTRPCRouter({
           },
         },
       });
-      console.log(property);
       return property;
     }),
   getProperties: protectedProcedure

@@ -33,19 +33,9 @@ const PropertyDetailPage = () => {
     propertyId: propertyId as string,
   });
 
-  const createEvaluation = api.evaluation.createEvaluation.useMutation({
-    onSuccess: () => {
-      toast.success('Successfully created evaluation');
-      utils.property.getPropertyById.invalidate();
-    },
-  });
+  const createEvaluation = api.evaluation.createEvaluation.useMutation();
 
-  const deleteEvaluation = api.evaluation.deleteEvaluation.useMutation({
-    onSuccess: () => {
-      toast.error('Unable to create evaluation');
-      utils.property.getPropertyById.invalidate();
-    },
-  });
+  const deleteEvaluation = api.evaluation.deleteEvaluation.useMutation();
 
   const handleCreateEvaluation = () => {
     createEvaluation.mutate(
@@ -53,6 +43,9 @@ const PropertyDetailPage = () => {
       {
         onSuccess: ({ id }) => {
           toast.success('Successfully created evaluation!');
+          utils.property.getPropertyById.invalidate({
+            propertyId: propertyId as string,
+          });
           router.push(`/properties/${property?.id}/evaluations/${id}`);
         },
         onError: () => {
@@ -67,6 +60,9 @@ const PropertyDetailPage = () => {
       { evaluationId },
       {
         onSuccess: () => {
+          utils.property.getPropertyById.invalidate({
+            propertyId: propertyId as string,
+          });
           toast.success('Successfully deleted evaluation');
         },
         onError: () => {
