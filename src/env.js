@@ -1,5 +1,5 @@
-import { createEnv } from "@t3-oss/env-nextjs";
-import { z } from "zod";
+import { createEnv } from '@t3-oss/env-nextjs';
+import { z } from 'zod';
 
 export const env = createEnv({
   /**
@@ -9,11 +9,13 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
     NODE_ENV: z
-      .enum(["development", "test", "production"])
-      .default("development"),
+      .enum(['development', 'test', 'production'])
+      .default('development'),
     GOOGLE_PLACES_API_KEY: z.string(),
     ZILLOW_API_URL: z.string(),
     ZILLOW_API_KEY: z.string(),
+    RENT_CAST_API_KEY: z.string(),
+    RENT_CAST_API_URL: z.string(),
   },
 
   /**
@@ -35,6 +37,9 @@ export const env = createEnv({
     GOOGLE_PLACES_API_KEY: process.env.GOOGLE_PLACES_API_KEY,
     ZILLOW_API_URL: process.env.ZILLOW_API_URL,
     ZILLOW_API_KEY: process.env.ZILLOW_API_KEY,
+    RENT_CAST_API_KEY: process.env.RENT_CAST_API_KEY,
+    RENT_CAST_API_URL: process.env.RENT_CAST_API_URL,
+
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

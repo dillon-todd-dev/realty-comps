@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ComparableType {
+  SALE
+  RENT
+}
+
 model User {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
@@ -22,58 +27,69 @@ model User {
   @@map("users")
 }
 
+model Address {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  street     String   @unique
+  city       String
+  state      String
+  postalCode String   @map("postal_code")
+  county     String?
+  latitude   Decimal?
+  longitude  Decimal?
+
+  properties  Property[]
+  comparables Comparable[]
+
+  @@map("addresses")
+}
+
 model Property {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  streetAddress String   @unique @map("street_address")
-  city          String
-  state         String
-  postalCode    String   @map("postal_code")
-  county        String?
-  latitude      Decimal?
-  longitude     Decimal?
-  description   String?
-  imageUrl      String?  @map("image_url")
+  description String?
+  imageUrl    String? @map("image_url")
 
-  propertyDetail PropertyDetail?
+  rentCastId String
+  mlsNumber Int?
+  mlsName String?
+
+  monthlyHoa                 Decimal? @map("annual_hoa")
+  bedrooms          Int
+  bathrooms         Decimal
+  garageSpaces        Int?
+  squareFootage Decimal? @map("square_footage")
+  yearBuilt     Int?     @map("year_built")
+  lotSize Decimal @map("lot_size")
+  subdivision String
+  legalDescription String
+
+  price Decimal?
+  priceRangeLow Decimal? @map("price_range_low")
+  priceRangeHigh Decimal? @map("price_range_high")
+  rent Decimal?
+  rentRangeLow Decimal? @map("rent_range_low")
+  rentRangeHigh Decimal? @map("rent_range_high")
 
   userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  addressId String  @map("address_id")
+  address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
 
   evaluations Evaluation[]
+  taxAssessments TaxAssessment[]
+  propertyTaxes PropertyTax[]
 
   @@map("properties")
 }
 
-model PropertyDetail {
-  id String @id @default(cuid())
-
-  mlsId String? @map("mls_id")
-  zpid  Int
-
-  listPrice Decimal? @map("list_price")
-
-  annualHoa                 Decimal? @map("annual_hoa")
-  annualHomeownersInsurance Decimal? @map("annual_homeowners_insurance")
-  annualPropertyTaxes       Decimal? @map("annual_property_taxes")
-  propertyTaxRate           Decimal? @map("property_tax_rate")
-
-  beds          Int?
-  baths         Decimal?
-  garage        Int?
-  squareFootage Decimal? @map("square_footage")
-  yearBuilt     Int?     @map("year_built")
-
-  propertyId String   @unique @map("property_id")
-  property   Property @relation(fields: [propertyId], references: [id])
-
-  @@map("property_details")
-}
-
 model Evaluation {
-  id String @id @default(cuid())
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -114,7 +130,86 @@ model Evaluation {
   refiMortgageInsurance Decimal @default(0) @map("refi_mortgage_insurance")
 
   propertyId String
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  comparables EvaluationComparable[]
 
   @@map("evaluations")
 }
+
+model Comparable {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  subdivision   String
+  bedrooms          Int
+  bathrooms         Int
+  garage        Int
+  built         Int
+  squareFootage Int      @map("square_footage")
+  lotSize Int @map("lot_size")
+  included      Boolean  @default(true)
+  price Decimal
+  
+  listingType String
+  listedDate String
+  removedDate String
+  lastSeenDate String
+  daysOnMarket Int
+  daysOld Int
+  distance Decimal
+  correlation Decimal
+
+  addressId String  @map("address_id")
+  address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+
+  evaluations EvaluationComparable[]
+
+  @@map("comparables")
+}
+
+model EvaluationComparable {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  type ComparableType
+
+  evaluationId String
+  comparableId String
+
+  evaluation Evaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  comparable Comparable @relation(fields: [comparableId], references: [id], onDelete: Cascade)
+
+  @@map("evaluation_comparable")
+}
+
+model TaxAssessment {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt
+
+  year Int
+  value Decimal
+  land Decimal
+  improvements Decimal
+
+  propertyId String
+  property Property @relation(fields: [propertyId], references: [id])
+
+  @@map("tax_assessments")
+}
+
+model PropertyTax {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  year Int
+  total Decimal
+
+  propertyId String
+  property Property @relation(fields: [propertyId], references: [id])
+}
+

@@ -1,7 +1,10 @@
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '../trpc';
-import { getPropertyDetails, getPropertyImages } from '@/lib/zillow';
-import { skip } from 'node:test';
+import {
+  getPropertyDetails,
+  getPropertyImages,
+  getPropertySaleComps,
+} from '@/lib/zillow';
 
 export const propertyRouter = createTRPCRouter({
   createProperty: protectedProcedure
@@ -19,30 +22,33 @@ export const propertyRouter = createTRPCRouter({
       const propertyImages = await getPropertyImages(propertyDetails.zpid);
       const property = await ctx.db.property.create({
         data: {
-          userId: ctx.user.userId!,
-          streetAddress: input.streetAddress,
-          city: input.city,
-          state: input.state,
-          postalCode: input.postalCode,
-          county: propertyDetails.county,
-          latitude: propertyDetails.latitude,
-          longitude: propertyDetails.longitude,
-          imageUrl: propertyImages?.images[0],
           description: propertyDetails.description,
-          propertyDetail: {
+          imageUrl: propertyImages?.images[0] ?? '/no-image-available.jpg',
+          mlsId: propertyDetails.mlsId,
+          zpid: propertyDetails.zpid,
+          listPrice: propertyDetails.price,
+          annualHoa: propertyDetails.hoaFee,
+          annualHomeownersInsurance: propertyDetails.annualHomeownersInsurance,
+          annualPropertyTaxes: propertyDetails.annualPropertyTaxes,
+          propertyTaxRate: propertyDetails.propertyTaxRate,
+          beds: propertyDetails.bedrooms,
+          baths: propertyDetails.bathrooms,
+          squareFootage: propertyDetails.livingArea,
+          yearBuilt: propertyDetails.yearBuilt,
+          address: {
             create: {
-              zpid: propertyDetails.zpid,
-              mlsId: propertyDetails.mlsId,
-              listPrice: propertyDetails.price,
-              annualHoa: propertyDetails.hoaFee,
-              annualHomeownersInsurance:
-                propertyDetails.annualHomeownersInsurance,
-              annualPropertyTaxes: propertyDetails.taxAnnualAmount,
-              propertyTaxRate: propertyDetails.propertyTaxRate,
-              beds: propertyDetails.bedrooms,
-              baths: propertyDetails.bathrooms,
-              squareFootage: propertyDetails.livingArea,
-              yearBuilt: propertyDetails.yearBuilt,
+              street: input.streetAddress,
+              city: input.city,
+              state: input.state,
+              postalCode: input.postalCode,
+              county: propertyDetails.county,
+              latitude: propertyDetails.latitude,
+              longitude: propertyDetails.longitude,
+            },
+          },
+          user: {
+            connect: {
+              id: ctx.user.userId!,
             },
           },
         },
@@ -65,6 +71,7 @@ export const propertyRouter = createTRPCRouter({
           },
           skip: input.skip,
           take: input.take,
+          include: { address: true },
         }),
         ctx.db.property.count(),
       ]);
@@ -76,8 +83,13 @@ export const propertyRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const property = await ctx.db.property.findUnique({
         where: { userId: ctx.user.userId!, id: input.propertyId },
-        include: { propertyDetail: true, evaluations: true },
+        include: { evaluations: true, address: true },
       });
       return property;
+    }),
+  getSaleComps: protectedProcedure
+    .input(z.object({ zpid: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const saleComps = await getPropertySaleComps(Number(input.zpid));
     }),
 });
