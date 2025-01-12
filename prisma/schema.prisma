@@ -51,29 +51,27 @@ model Property {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  description String?
   imageUrl    String? @map("image_url")
-
   rentCastId String
-  mlsNumber Int?
-  mlsName String?
+  mlsNumber  Int?
+  mlsName    String?
 
-  monthlyHoa                 Decimal? @map("annual_hoa")
-  bedrooms          Int
-  bathrooms         Decimal
-  garageSpaces        Int?
-  squareFootage Decimal? @map("square_footage")
-  yearBuilt     Int?     @map("year_built")
-  lotSize Decimal @map("lot_size")
-  subdivision String
-  legalDescription String
+  monthlyHoa       Decimal? @map("annual_hoa")
+  bedrooms         Int
+  bathrooms        Decimal
+  garageSpaces     Int?
+  squareFootage    Decimal  @map("square_footage")
+  yearBuilt        Int      @map("year_built")
+  lotSize          Decimal  @map("lot_size")
+  subdivision      String
+  legalDescription String   @map("legal_description")
 
-  price Decimal?
-  priceRangeLow Decimal? @map("price_range_low")
+  price          Decimal?
+  priceRangeLow  Decimal? @map("price_range_low")
   priceRangeHigh Decimal? @map("price_range_high")
-  rent Decimal?
-  rentRangeLow Decimal? @map("rent_range_low")
-  rentRangeHigh Decimal? @map("rent_range_high")
+  rent           Decimal?
+  rentRangeLow   Decimal? @map("rent_range_low")
+  rentRangeHigh  Decimal? @map("rent_range_high")
 
   userId String @map("user_id")
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -81,9 +79,9 @@ model Property {
   addressId String  @map("address_id")
   address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
 
-  evaluations Evaluation[]
+  evaluations    Evaluation[]
   taxAssessments TaxAssessment[]
-  propertyTaxes PropertyTax[]
+  propertyTaxes  PropertyTax[]
 
   @@map("properties")
 }
@@ -143,23 +141,23 @@ model Comparable {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   subdivision   String
-  bedrooms          Int
-  bathrooms         Int
+  bedrooms      Int
+  bathrooms     Int
   garage        Int
   built         Int
-  squareFootage Int      @map("square_footage")
-  lotSize Int @map("lot_size")
-  included      Boolean  @default(true)
-  price Decimal
-  
-  listingType String
-  listedDate String
-  removedDate String
+  squareFootage Int     @map("square_footage")
+  lotSize       Int     @map("lot_size")
+  included      Boolean @default(true)
+  price         Decimal
+
+  listingType  String
+  listedDate   String
+  removedDate  String
   lastSeenDate String
   daysOnMarket Int
-  daysOld Int
-  distance Decimal
-  correlation Decimal
+  daysOld      Int
+  distance     Decimal
+  correlation  Decimal
 
   addressId String  @map("address_id")
   address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
@@ -186,30 +184,31 @@ model EvaluationComparable {
 }
 
 model TaxAssessment {
-  id String @id @default(cuid())
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt
 
-  year Int
-  value Decimal
-  land Decimal
+  year         Int
+  value        Decimal
+  land         Decimal
   improvements Decimal
 
   propertyId String
-  property Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id])
 
   @@map("tax_assessments")
 }
 
 model PropertyTax {
-  id String @id @default(cuid())
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  year Int
+  year  Int
   total Decimal
 
   propertyId String
-  property Property @relation(fields: [propertyId], references: [id])
-}
+  property   Property @relation(fields: [propertyId], references: [id])
 
+  @@map("property_taxes")
+}

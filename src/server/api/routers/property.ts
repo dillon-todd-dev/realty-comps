@@ -1,10 +1,11 @@
-import { z } from 'zod';
-import { createTRPCRouter, protectedProcedure } from '../trpc';
+import { z } from "zod";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 import {
-  getPropertyDetails,
+  getPropertyDetails as zillowPropertyDetails,
   getPropertyImages,
   getPropertySaleComps,
-} from '@/lib/zillow';
+} from "@/lib/zillow";
+import { getPropertyDetails } from "@/lib/rent-cast";
 
 export const propertyRouter = createTRPCRouter({
   createProperty: protectedProcedure
@@ -18,37 +19,45 @@ export const propertyRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const address = `${input.streetAddress}, ${input.city}, ${input.state}, ${input.postalCode}`;
-      const propertyDetails = await getPropertyDetails(address);
+      const propertyDetails = await zillowPropertyDetails(address);
       const propertyImages = await getPropertyImages(propertyDetails.zpid);
+      const rentCastProperties = await getPropertyDetails(address);
+      if (rentCastProperties.length < 0) return null;
       const property = await ctx.db.property.create({
         data: {
-          description: propertyDetails.description,
-          imageUrl: propertyImages?.images[0] ?? '/no-image-available.jpg',
-          mlsId: propertyDetails.mlsId,
-          zpid: propertyDetails.zpid,
-          listPrice: propertyDetails.price,
-          annualHoa: propertyDetails.hoaFee,
-          annualHomeownersInsurance: propertyDetails.annualHomeownersInsurance,
-          annualPropertyTaxes: propertyDetails.annualPropertyTaxes,
-          propertyTaxRate: propertyDetails.propertyTaxRate,
-          beds: propertyDetails.bedrooms,
-          baths: propertyDetails.bathrooms,
-          squareFootage: propertyDetails.livingArea,
-          yearBuilt: propertyDetails.yearBuilt,
-          address: {
-            create: {
-              street: input.streetAddress,
-              city: input.city,
-              state: input.state,
-              postalCode: input.postalCode,
-              county: propertyDetails.county,
-              latitude: propertyDetails.latitude,
-              longitude: propertyDetails.longitude,
-            },
-          },
+          rentCastId: rentCastProperties[0].id,
+          bedrooms: rentCastProperties[0].bedrooms,
+          bathrooms: rentCastProperties[0].bathrooms,
+          lotSize: rentCastProperties[0].lotSize,
+          squareFootage: rentCastProperties[0].squareFootage,
+          yearBuilt: rentCastProperties[0].yearBuilt,
+          subdivision: rentCastProperties[0].subdivision,
+          legalDescription: rentCastProperties[0].legalDescription,
+          imageUrl: "/no-image-available.jpg",
           user: {
             connect: {
               id: ctx.user.userId!,
+            },
+          },
+          address: {
+            create: {
+              street: rentCastProperties[0].addressLine1,
+              city: rentCastProperties[0].city,
+              state: rentCastProperties[0].state,
+              postalCode: rentCastProperties[0].zipCode,
+              county: rentCastProperties[0].county,
+              longitude: rentCastProperties[0].longitude,
+              latitude: rentCastProperties[0].latitude,
+            },
+          },
+          taxAssessments: {
+            createMany: {
+              data: Object.values(rentCastProperties[0].taxAssessments),
+            },
+          },
+          propertyTaxes: {
+            createMany: {
+              data: Object.values(rentCastProperties[0].propertyTaxes),
             },
           },
         },

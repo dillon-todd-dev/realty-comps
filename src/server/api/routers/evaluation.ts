@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { createTRPCRouter, protectedProcedure } from '../trpc';
+import { z } from "zod";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const evaluationRouter = createTRPCRouter({
   createEvaluation: protectedProcedure
@@ -28,7 +28,7 @@ export const evaluationRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return await ctx.db.evaluation.findUnique({
         where: { id: input.evaluationId },
-        include: { property: true },
+        include: { property: { include: { address: true } } },
       });
     }),
   deleteEvaluation: protectedProcedure
