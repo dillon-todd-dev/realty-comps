@@ -19,6 +19,7 @@ type FormInput = {
 };
 
 const CreatePropertyPage = () => {
+  const utils = api.useUtils();
   const router = useRouter();
   const [placeQueryTrigger, setPlaceQueryTrigger] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -49,6 +50,7 @@ const CreatePropertyPage = () => {
   const onSubmit = (data: FormInput) => {
     createProperty.mutate(data, {
       onSuccess: () => {
+        utils.property.getProperties.invalidate();
         toast.success('Property added successfully');
         reset();
         router.push('/properties');

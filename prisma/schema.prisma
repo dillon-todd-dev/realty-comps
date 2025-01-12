@@ -51,8 +51,8 @@ model Property {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  imageUrl    String? @map("image_url")
-  rentCastId String
+  imageUrl   String? @map("image_url")
+  rentCastId String  @unique @map("rent_cast_id")
   mlsNumber  Int?
   mlsName    String?
 
@@ -140,22 +140,24 @@ model Comparable {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  subdivision   String
+  rentCastId String @unique @map("rent_cast_id")
+
+  subdivision   String?
   bedrooms      Int
   bathrooms     Int
-  garage        Int
-  built         Int
+  garage        Int?
+  yearBuilt     Int     @map("year_built")
   squareFootage Int     @map("square_footage")
   lotSize       Int     @map("lot_size")
   included      Boolean @default(true)
   price         Decimal
 
-  listingType  String
-  listedDate   String
-  removedDate  String
-  lastSeenDate String
-  daysOnMarket Int
-  daysOld      Int
+  listingType  String  @map("listing_type")
+  listedDate   String  @map("listed_date")
+  removedDate  String? @map("removed_date")
+  lastSeenDate String  @map("last_seen_date")
+  daysOnMarket Int     @map("days_on_market")
+  daysOld      Int     @map("days_old")
   distance     Decimal
   correlation  Decimal
 

@@ -21,82 +21,43 @@ const SaleComparables = () => {
         <CardTitle>Sale Comparables</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className='mb-4 grid grid-cols-1 gap-4 md:grid-cols-3'>
+        <div className='mb-4 grid grid-cols-1 gap-4 md:grid-cols-2'>
           <div>
             <label htmlFor='radius' className='mb-1 block text-sm font-medium'>
-              Radius (miles)
+              Max Radius (miles)
             </label>
             <Input type='number' id='radius' placeholder='Radius' />
           </div>
           <div>
-            <label htmlFor='bedsMin' className='mb-1 block text-sm font-medium'>
-              Beds Min
+            <label htmlFor='beds' className='mb-1 block text-sm font-medium'>
+              Beds
             </label>
-            <Input type='number' id='bedsMin' placeholder='Beds Min' />
+            <Input type='number' id='beds' placeholder='Beds' />
           </div>
           <div>
-            <label htmlFor='bedsMax' className='mb-1 block text-sm font-medium'>
-              Beds Max
+            <label htmlFor='baths' className='mb-1 block text-sm font-medium'>
+              Baths
             </label>
-            <Input type='number' id='bedsMax' placeholder='Beds Max' />
-          </div>
-          <div>
-            <label
-              htmlFor='bathsMin'
-              className='mb-1 block text-sm font-medium'
-            >
-              Baths Min
-            </label>
-            <Input type='number' id='bathsMin' placeholder='Baths Min' />
+            <Input type='number' id='baths' placeholder='Baths' />
           </div>
           <div>
             <label
-              htmlFor='bathsMax'
+              htmlFor='squareFootage'
               className='mb-1 block text-sm font-medium'
             >
-              Baths Max
-            </label>
-            <Input type='number' id='bathsMax' placeholder='Baths Max' />
-          </div>
-          <div>
-            <label
-              htmlFor='garageMin'
-              className='mb-1 block text-sm font-medium'
-            >
-              Garage Min
-            </label>
-            <Input type='number' id='garageMin' placeholder='Garage Min' />
-          </div>
-          <div>
-            <label
-              htmlFor='garageMax'
-              className='mb-1 block text-sm font-medium'
-            >
-              Garage Max
-            </label>
-            <Input type='number' id='garageMax' placeholder='Garage Max' />
-          </div>
-          <div>
-            <label
-              htmlFor='yearBuilt'
-              className='mb-1 block text-sm font-medium'
-            >
-              Year Built +/-
-            </label>
-            <Input type='number' id='yearBuilt' placeholder='Year Built +/-' />
-          </div>
-          <div>
-            <label
-              htmlFor='monthsClosed'
-              className='mb-1 block text-sm font-medium'
-            >
-              Months Closed
+              Square Footage
             </label>
             <Input
               type='number'
-              id='monthsClosed'
-              placeholder='Months Closed'
+              id='squareFootage'
+              placeholder='Square Footage'
             />
+          </div>
+          <div>
+            <label htmlFor='daysOld' className='mb-1 block text-sm font-medium'>
+              Days Old
+            </label>
+            <Input type='number' id='daysOld' defaultValue={1} />
           </div>
         </div>
         <Button className='mb-4'>Search Comparables</Button>
