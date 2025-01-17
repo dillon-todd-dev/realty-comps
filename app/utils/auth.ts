@@ -1,12 +1,12 @@
 import NextAuth from 'next-auth';
-import NodeMailer from 'next-auth/providers/nodemailer';
+import Nodemailer from 'next-auth/providers/nodemailer';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import prisma from '@/app/utils/db';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
-    NodeMailer({
+    Nodemailer({
       server: {
         host: process.env.EMAIL_SERVER_HOST,
         port: process.env.EMAIL_SERVER_PORT,
@@ -18,7 +18,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       from: process.env.EMAIL_FROM,
     }),
   ],
+  callbacks: {
+    async signIn({ profile }) {
+      const existingUser = await prisma.user.findUnique({
+        where: { email: profile.email },
+      });
+
+      if (!existingUser) {
+        return false;
+      }
+
+      if (!existingUser.isActive) {
+        return false;
+      }
+
+      return true;
+    },
+  },
   pages: {
-    verifyRequest: '/verify',
+    signIn: '/login',
   },
 });

@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 import { auth, signIn } from '../utils/auth';
 import { SubmitButton } from '@/components/buttons/submit-button';
 import { redirect } from 'next/navigation';
+import { login } from '../actions';
 
 export default async function Login() {
   const session = await auth();
@@ -20,13 +21,7 @@ export default async function Login() {
             <CardDescription>Enter your email below to login to your account</CardDescription>
           </CardHeader>
           <CardContent>
-            <form
-              action={async (formData) => {
-                'use server';
-                await signIn('nodemailer', formData);
-              }}
-              className='flex flex-col gap-y-4'
-            >
+            <form action={login} className='flex flex-col gap-y-4'>
               <div className='flex flex-col gap-y-2'>
                 <Label>Email</Label>
                 <Input name='email' type='email' required placeholder='hello@hello.com' />
