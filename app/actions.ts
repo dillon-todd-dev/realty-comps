@@ -1,16 +1,21 @@
 'use server';
 
 import { signIn, signOut } from '@/app/utils/auth';
-import { loginSchema } from './utils/schema';
-import { parseWithZod } from '@conform-to/zod';
+import { redirect } from 'next/navigation';
 
 export const login = async (formData: FormData) => {
-  const submission = parseWithZod(formData, { schema: loginSchema });
-  if (submission.status !== 'success') {
-    return submission.reply();
+  let error = false;
+
+  try {
+    await signIn('nodemailer', formData);
+  } catch (error) {
+    error = true;
   }
 
-  await signIn('nodemailer', formData);
+  if (error) {
+    console.log('REDIRECTING TO ACCESS DENIED');
+    redirect('/access-denied');
+  }
 };
 
 export const logout = async () => {

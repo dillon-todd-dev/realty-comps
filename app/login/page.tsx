@@ -24,7 +24,7 @@ export default async function Login() {
             <form action={login} className='flex flex-col gap-y-4'>
               <div className='flex flex-col gap-y-2'>
                 <Label>Email</Label>
-                <Input name='email' type='email' required placeholder='hello@hello.com' />
+                <Input type='email' name='email' placeholder='hello@hello.com' />
               </div>
               <SubmitButton />
             </form>

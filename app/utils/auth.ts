@@ -19,23 +19,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn({ profile }) {
+    async signIn({ user }) {
+      console.log('next-auth user', user);
       const existingUser = await prisma.user.findUnique({
-        where: { email: profile.email },
+        where: { email: user.email! },
       });
+      console.log('existingUser', existingUser);
 
-      if (!existingUser) {
+      if (!existingUser || !existingUser.isActive) {
+        console.log('RETURNING FALSE');
         return false;
       }
 
-      if (!existingUser.isActive) {
-        return false;
-      }
-
+      console.log('RETURNING TRUE');
       return true;
     },
   },
   pages: {
-    signIn: '/login',
+    verifyRequest: '/verify',
   },
 });

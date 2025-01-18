@@ -8,6 +8,7 @@ async function main() {
       email: 'dillontodd.dev@gmail.com',
       firstName: 'Dillon',
       lastName: 'Todd',
+      emailVerified: new Date(),
       role: 'ADMIN',
       isActive: true,
     },

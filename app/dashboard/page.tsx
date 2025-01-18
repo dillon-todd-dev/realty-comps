@@ -3,7 +3,7 @@ import { requireUser } from '../utils/hooks';
 import { logout } from '@/app/actions';
 
 export default async function DashboardRoute() {
-  const session = await requireUser();
+  await requireUser();
 
   return (
     <div>
