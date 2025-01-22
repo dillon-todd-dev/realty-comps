@@ -91,6 +91,18 @@ const isAuthenticated = t.middleware(async ({ next, ctx }) => {
   });
 });
 
+const isAdmin = t.middleware(async ({ next, ctx }) => {
+  const session = await auth.api.getSession({ headers: ctx.headers });
+  if (!session?.user || session.user.role !== 'admin') {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'You must be an admin to access this resource',
+    });
+  }
+
+  return next({ ctx: { ...ctx, user: session.user } });
+});
+
 /**
  * Middleware for timing procedure execution and adding an artificial delay in development.
  *
@@ -127,3 +139,5 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
  * Protected (authenticated) procedure
  */
 export const protectedProcedure = t.procedure.use(isAuthenticated);
+
+export const adminProcedure = t.procedure.use(isAdmin);
