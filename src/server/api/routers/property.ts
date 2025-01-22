@@ -27,15 +27,15 @@ export const propertyRouter = createTRPCRouter({
 
       const property = await ctx.db.property.create({
         data: {
-          rentCastId: propertyDetails[0].id,
-          bedrooms: propertyDetails[0].bedrooms,
-          bathrooms: propertyDetails[0].bathrooms,
-          lotSize: propertyDetails[0].lotSize,
-          squareFootage: propertyDetails[0].squareFootage,
-          yearBuilt: propertyDetails[0].yearBuilt,
-          subdivision: propertyDetails[0].subdivision,
-          legalDescription: propertyDetails[0].legalDescription,
-          imageUrl: imageUrl,
+          rentCastId: propertyDetails.id,
+          bedrooms: propertyDetails.bedrooms,
+          bathrooms: propertyDetails.bathrooms,
+          lotSize: propertyDetails.lotSize,
+          squareFootage: propertyDetails.squareFootage,
+          yearBuilt: propertyDetails.yearBuilt,
+          subdivision: propertyDetails.subdivision,
+          legalDescription: propertyDetails.legalDescription,
+          imageUrl: imageUrl?.url,
           user: {
             connect: {
               id: ctx.user.id,
@@ -43,23 +43,17 @@ export const propertyRouter = createTRPCRouter({
           },
           address: {
             create: {
-              street: propertyDetails[0].addressLine1,
-              city: propertyDetails[0].city,
-              state: propertyDetails[0].state,
-              postalCode: propertyDetails[0].zipCode,
-              county: propertyDetails[0].county,
-              longitude: propertyDetails[0].longitude,
-              latitude: propertyDetails[0].latitude,
+              ...propertyDetails.address,
             },
           },
           taxAssessments: {
             createMany: {
-              data: Object.values(propertyDetails[0].taxAssessments),
+              data: propertyDetails.taxAssessments,
             },
           },
           propertyTaxes: {
             createMany: {
-              data: Object.values(propertyDetails[0].propertyTaxes),
+              data: propertyDetails.propertyTaxes,
             },
           },
         },

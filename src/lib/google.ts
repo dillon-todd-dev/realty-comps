@@ -1,7 +1,27 @@
 import axios from 'axios';
 import { env } from '@/env';
 
-export const getAutocompleteSuggestions = async (searchInput: string) => {
+type AutocompleteResponse = {
+  predictions: {
+    description: string;
+    placeId: string;
+  }[];
+};
+
+type PlaceDetailsResponse = {
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+};
+
+type StreetViewImageResponse = {
+  url: string;
+};
+
+export const getAutocompleteSuggestions = async (
+  searchInput: string,
+): Promise<AutocompleteResponse | null> => {
   const url = 'https://places.googleapis.com/v1/places:autocomplete';
   const primaryTypes = [
     'street_address',
@@ -34,7 +54,9 @@ export const getAutocompleteSuggestions = async (searchInput: string) => {
   }
 };
 
-export const getPlaceDetails = async (placeId: string) => {
+export const getPlaceDetails = async (
+  placeId: string,
+): Promise<PlaceDetailsResponse | null> => {
   const url = `https://places.googleapis.com/v1/places/${placeId}`;
 
   try {
@@ -76,8 +98,22 @@ export const getPlaceDetails = async (placeId: string) => {
   }
 };
 
-export const getStreetViewImage = async (address: string) => {
+export const getStreetViewImage = async (
+  address: string,
+): Promise<StreetViewImageResponse | null> => {
   const encodedAddress = encodeURIComponent(address);
   const url = `https://maps.googleapis.com/maps/api/streetview?location=${encodedAddress}&size=600x600&key=${env.GOOGLE_API_KEY}`;
-  return url;
+
+  try {
+    const { data } = await axios.get(url, {
+      headers: {
+        'X-Goog-Api-Key': env.GOOGLE_API_KEY,
+      },
+    });
+
+    return data;
+  } catch (error) {
+    console.error('Failed to get street view image:', error);
+    return null;
+  }
 };

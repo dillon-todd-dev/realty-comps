@@ -1,4 +1,4 @@
-import { adminProcedure, createTRPCRouter, protectedProcedure } from '../trpc';
+import { adminProcedure, createTRPCRouter } from '../trpc';
 
 export const userRouter = createTRPCRouter({
   getUsers: adminProcedure.query(async ({ ctx }) => {
@@ -7,7 +7,7 @@ export const userRouter = createTRPCRouter({
     return users.map((user) => ({
       name: user.name,
       email: user.email,
-      role: user.role || 'user',
+      role: user.role ?? 'user',
       isActive: !user.banned,
     }));
   }),
