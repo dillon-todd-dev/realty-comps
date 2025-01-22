@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  MEMBER
+  ADMIN
+}
+
 enum ComparableType {
   SALE
   RENT
@@ -17,14 +22,28 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  emailAddress String  @unique @map("email_address")
-  firstName    String? @map("first_name")
-  lastName     String? @map("last_name")
-  imageUrl     String? @map("image_url")
+  email     String   @unique @map("email_address")
+  password  String
+  firstName String   @map("first_name")
+  lastName  String   @map("last_name")
+  role      UserRole @default(MEMBER)
+  isActive  Boolean  @default(true)
+  image     String?  @map("image_url")
 
   properties Property[]
+  sessions   Session[]
 
   @@map("users")
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Address {

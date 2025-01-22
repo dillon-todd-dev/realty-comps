@@ -11,9 +11,7 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(['development', 'test', 'production'])
       .default('development'),
-    GOOGLE_PLACES_API_KEY: z.string(),
-    ZILLOW_API_URL: z.string(),
-    ZILLOW_API_KEY: z.string(),
+    GOOGLE_API_KEY: z.string(),
     RENT_CAST_API_KEY: z.string(),
     RENT_CAST_API_URL: z.string(),
   },
@@ -34,9 +32,7 @@ export const env = createEnv({
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
-    GOOGLE_PLACES_API_KEY: process.env.GOOGLE_PLACES_API_KEY,
-    ZILLOW_API_URL: process.env.ZILLOW_API_URL,
-    ZILLOW_API_KEY: process.env.ZILLOW_API_KEY,
+    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
     RENT_CAST_API_KEY: process.env.RENT_CAST_API_KEY,
     RENT_CAST_API_URL: process.env.RENT_CAST_API_URL,
 

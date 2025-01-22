@@ -1,5 +1,4 @@
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { UserButton } from '@clerk/nextjs';
 import React from 'react';
 import AppSidebar from '@/app/_components/app-sidebar';
 
@@ -16,7 +15,7 @@ const ProtectedLayout = ({ children }: Props) => {
         <div className='flex items-center gap-2 rounded-md border border-sidebar-border bg-sidebar p-2 px-4 shadow'>
           {/* search bar */}
           <div className='ml-auto'></div>
-          <UserButton />
+          {/* add user button */}
         </div>
         <div className='h-4'></div>
         {/* main content */}

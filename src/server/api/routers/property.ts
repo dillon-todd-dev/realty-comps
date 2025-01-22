@@ -33,7 +33,7 @@ export const propertyRouter = createTRPCRouter({
           imageUrl: imageUrl,
           user: {
             connect: {
-              id: ctx.user.userId!,
+              id: ctx.user.id,
             },
           },
           address: {
@@ -72,7 +72,7 @@ export const propertyRouter = createTRPCRouter({
       const [properties, totalProperties] = await Promise.all([
         ctx.db.property.findMany({
           where: {
-            userId: ctx.user.userId!,
+            userId: ctx.user.id,
           },
           skip: input.skip,
           take: input.take,
@@ -87,7 +87,7 @@ export const propertyRouter = createTRPCRouter({
     .input(z.object({ propertyId: z.string() }))
     .query(async ({ ctx, input }) => {
       const property = await ctx.db.property.findUnique({
-        where: { userId: ctx.user.userId!, id: input.propertyId },
+        where: { userId: ctx.user.id, id: input.propertyId },
         include: { evaluations: true, address: true },
       });
       return property;

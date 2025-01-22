@@ -1,14 +1,14 @@
-import axios from "axios";
-import { env } from "@/env";
+import axios from 'axios';
+import { env } from '@/env';
 
 export const getAutocompleteSuggestions = async (searchInput: string) => {
-  const url = "https://places.googleapis.com/v1/places:autocomplete";
+  const url = 'https://places.googleapis.com/v1/places:autocomplete';
   const primaryTypes = [
-    "street_address",
-    "subpremise",
-    "route",
-    "street_number",
-    "landmark",
+    'street_address',
+    'subpremise',
+    'route',
+    'street_number',
+    'landmark',
   ];
 
   try {
@@ -17,19 +17,19 @@ export const getAutocompleteSuggestions = async (searchInput: string) => {
       {
         input: searchInput,
         includedPrimaryTypes: primaryTypes,
-        includedRegionCodes: ["us"],
+        includedRegionCodes: ['us'],
       },
       {
         headers: {
-          "Content-Type": "application/json",
-          "X-Goog-Api-Key": env.GOOGLE_PLACES_API_KEY,
+          'Content-Type': 'application/json',
+          'X-Goog-Api-Key': env.GOOGLE_API_KEY,
         },
       },
     );
 
     return data;
   } catch (error) {
-    console.error("Failed to get autocomplete suggestions:", error);
+    console.error('Failed to get autocomplete suggestions:', error);
     return null;
   }
 };
@@ -40,9 +40,9 @@ export const getPlaceDetails = async (placeId: string) => {
   try {
     const { data } = await axios.get(url, {
       headers: {
-        "X-Goog-Api-Key": env.GOOGLE_PLACES_API_KEY,
-        "X-Goog-FieldMask": "addressComponents,photos",
-        "Content-Type": "application/json",
+        'X-Goog-Api-Key': env.GOOGLE_API_KEY,
+        'X-Goog-FieldMask': 'addressComponents,photos',
+        'Content-Type': 'application/json',
       },
     });
 
@@ -55,14 +55,14 @@ export const getPlaceDetails = async (placeId: string) => {
         },
       );
 
-      return addressPart?.longText ?? "";
+      return addressPart?.longText ?? '';
     };
 
-    const streetNumber = findAddressPart("street_number");
-    const streetName = findAddressPart("route");
-    const city = findAddressPart("locality");
-    const state = findAddressPart("administrative_area_level_1");
-    const postalCode = findAddressPart("postal_code");
+    const streetNumber = findAddressPart('street_number');
+    const streetName = findAddressPart('route');
+    const city = findAddressPart('locality');
+    const state = findAddressPart('administrative_area_level_1');
+    const postalCode = findAddressPart('postal_code');
 
     return {
       street: `${streetNumber} ${streetName}`,
@@ -71,7 +71,7 @@ export const getPlaceDetails = async (placeId: string) => {
       postalCode,
     };
   } catch (error) {
-    console.error("Failed to get place details:", error);
+    console.error('Failed to get place details:', error);
     return null;
   }
 };
