@@ -28,7 +28,10 @@ type AutocompleteSuggestions = {
   }[];
 };
 
-type AutocompleteResponse = {};
+type AutocompleteResponse = {
+  value: string;
+  label: string;
+};
 
 type PlaceDetailsResponse = {
   street: string;
@@ -43,7 +46,7 @@ type StreetViewImageResponse = {
 
 export const getAutocompleteSuggestions = async (
   searchInput: string,
-): Promise<AutocompleteResponse | null> => {
+): Promise<AutocompleteResponse[] | null> => {
   const url = 'https://places.googleapis.com/v1/places:autocomplete';
   const primaryTypes = [
     'street_address',
@@ -69,7 +72,14 @@ export const getAutocompleteSuggestions = async (
       },
     );
 
-    return data;
+    if (data.suggestions.length === 0) return null;
+
+    return data.suggestions.map((suggestion) => {
+      return {
+        value: suggestion.placePrediction[0]?.placeId ?? '',
+        label: suggestion.placePrediction[0]?.text.text ?? '',
+      };
+    });
   } catch (error) {
     console.error('Failed to get autocomplete suggestions:', error);
     return null;

@@ -75,14 +75,6 @@ const CreatePropertyPage = () => {
       { enabled: debouncedSearchValue.length > 0 },
     );
 
-  let suggestions =
-    predictions?.suggestions.map((suggestion: any) => {
-      return {
-        value: suggestion.placePrediction.placeId,
-        label: suggestion.placePrediction.text.text,
-      };
-    }) || [];
-
   return (
     <div className='flex h-full items-center justify-center gap-12'>
       <div>
@@ -99,7 +91,7 @@ const CreatePropertyPage = () => {
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-2'>
             <AutocompleteInput
               placeholder='Search...'
-              items={suggestions}
+              items={predictions ?? []}
               searchValue={searchValue}
               onSearchValueChange={setSearchValue}
               selectedValue={selectedValue}
