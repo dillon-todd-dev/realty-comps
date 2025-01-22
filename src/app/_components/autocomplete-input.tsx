@@ -4,17 +4,17 @@ import {
   CommandGroup,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import { Command as CommandPrimitive } from "cmdk";
+} from '@/components/ui/command';
+import { Command as CommandPrimitive } from 'cmdk';
 import {
   Popover,
   PopoverAnchor,
   PopoverContent,
-} from "@/components/ui/popover";
-import React, { useMemo, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Check, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/popover';
+import React, { useMemo, useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Check, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type Props<T extends string> = {
   searchValue: string;
@@ -36,8 +36,8 @@ const AutocompleteInput = <T extends string>({
   dataFetchOnSelectionChange,
   items,
   isLoading,
-  emptyMessage = "No items.",
-  placeholder = "Search...",
+  emptyMessage = 'No items.',
+  placeholder = 'Search...',
 }: Props<T>) => {
   const [open, setOpen] = useState(false);
 
@@ -54,13 +54,13 @@ const AutocompleteInput = <T extends string>({
   );
 
   const reset = () => {
-    onSelectedValueChange("" as T);
-    onSearchValueChange("");
+    onSelectedValueChange('' as T);
+    onSearchValueChange('');
   };
 
   const onInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     if (
-      !e.relatedTarget?.hasAttribute("cmdk-list") &&
+      !e.relatedTarget?.hasAttribute('cmdk-list') &&
       labels[selectedValue] !== searchValue
     ) {
       reset();
@@ -74,13 +74,13 @@ const AutocompleteInput = <T extends string>({
     } else {
       dataFetchOnSelectionChange(true);
       onSelectedValueChange(inputValue as T);
-      onSearchValueChange(labels[inputValue] ?? "");
+      onSearchValueChange(labels[inputValue] ?? '');
     }
     setOpen(false);
   };
 
   return (
-    <div className="flex items-center">
+    <div className='flex items-center'>
       <Popover open={open} onOpenChange={setOpen}>
         <Command shouldFilter={false}>
           <PopoverAnchor asChild>
@@ -88,7 +88,7 @@ const AutocompleteInput = <T extends string>({
               asChild
               value={searchValue}
               onValueChange={onSearchValueChange}
-              onKeyDown={(e) => setOpen(e.key !== "Escape")}
+              onKeyDown={(e) => setOpen(e.key !== 'Escape')}
               onMouseDown={() => setOpen((open) => !!searchValue || !open)}
               onFocus={() => setOpen(true)}
               onBlur={onInputBlur}
@@ -96,24 +96,24 @@ const AutocompleteInput = <T extends string>({
               <Input placeholder={placeholder} />
             </CommandPrimitive.Input>
           </PopoverAnchor>
-          {!open && <CommandList aria-hidden="true" className="hidden" />}
+          {!open && <CommandList aria-hidden='true' className='hidden' />}
           <PopoverContent
             asChild
             onOpenAutoFocus={(e) => e.preventDefault()}
             onInteractOutside={(e) => {
               if (
                 e.target instanceof Element &&
-                e.target.hasAttribute("cmdk-input")
+                e.target.hasAttribute('cmdk-input')
               ) {
                 e.preventDefault();
               }
             }}
-            className="w-[--radix-popover-trigger-width] p-0"
+            className='w-[--radix-popover-trigger-width] p-0'
           >
             <CommandList>
               {isLoading && (
-                <div className="justify-content flex h-28 items-center">
-                  <Loader2 className="size-6 animate-spin" />
+                <div className='justify-content flex h-28 items-center'>
+                  <Loader2 className='size-6 animate-spin' />
                 </div>
               )}
               {items.length > 0 && !isLoading ? (
@@ -127,10 +127,10 @@ const AutocompleteInput = <T extends string>({
                     >
                       <Check
                         className={cn(
-                          "mr-2 h-4 w-4",
+                          'mr-2 h-4 w-4',
                           selectedValue === option.value
-                            ? "opacity-100"
-                            : "opacity-0",
+                            ? 'opacity-100'
+                            : 'opacity-0',
                         )}
                       />
                       {option.label}

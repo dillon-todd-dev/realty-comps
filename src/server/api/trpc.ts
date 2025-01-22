@@ -75,7 +75,7 @@ export const createCallerFactory = t.createCallerFactory;
 export const createTRPCRouter = t.router;
 
 const isAuthenticated = t.middleware(async ({ next, ctx }) => {
-  const session = await auth();
+  const session = await auth.api.getSession({ headers: ctx.headers });
   if (!session?.user) {
     throw new TRPCError({
       code: 'UNAUTHORIZED',

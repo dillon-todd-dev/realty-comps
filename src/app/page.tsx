@@ -13,7 +13,7 @@ export default async function Home() {
       </p>
       <div className='space-x-4'>
         <Button asChild>
-          <Link href='/sign-in'>Sign In</Link>
+          <Link href='/auth/login'>Sign In</Link>
         </Button>
         <Button variant='outline' asChild>
           <Link href='/sign-up'>Get Started</Link>

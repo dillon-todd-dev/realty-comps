@@ -1,6 +1,7 @@
 'use client';
 
 import AutocompleteInput from '@/app/_components/autocomplete-input';
+import { SubmitButton } from '@/app/_components/submit-button';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import useDebounce from '@/hooks/use-debounce';
@@ -49,7 +50,13 @@ const CreatePropertyPage = () => {
 
   const onSubmit = (data: FormInput) => {
     createProperty.mutate(data, {
-      onSuccess: () => {
+      onSuccess: (property) => {
+        if (!property) {
+          toast.error('Failed to add property');
+          reset();
+          return;
+        }
+
         utils.property.getProperties.invalidate();
         toast.success('Property added successfully');
         reset();
@@ -80,7 +87,6 @@ const CreatePropertyPage = () => {
 
   return (
     <div className='flex h-full items-center justify-center gap-12'>
-      <img src='/property-investment.png' className='h-56 w-auto' />
       <div>
         <div>
           <h1 className='text-2xl font-semibold'>
@@ -148,15 +154,10 @@ const CreatePropertyPage = () => {
               )}
             />
             <div className='h-2'></div>
-            <Button type='submit'>
-              {createProperty.isPending ? (
-                <div>
-                  <Loader2 className='size-4 animate-spin' />
-                </div>
-              ) : (
-                <p>Add Property</p>
-              )}
-            </Button>
+            <SubmitButton
+              text='Add Property'
+              isLoading={createProperty.isPending}
+            />
           </form>
         </div>
       </div>

@@ -9,16 +9,13 @@ import { Prisma } from '@prisma/client';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { redirect, useSearchParams } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 
 type Property = Prisma.PropertyGetPayload<{ include: { address: true } }>;
 
 const PROPERTIES_PER_PAGE = 6;
 
 const PropertiesPage = () => {
-  const { data: session } = useSession();
-  if (!session) redirect('/auth/login');
   const searchParams = useSearchParams();
   const page: string | null = searchParams.get('page');
   const currentPage = page ? parseInt(page) : 1;
@@ -40,7 +37,8 @@ const PropertiesPage = () => {
 
   if (!isLoading && data?.properties.length === 0) {
     return (
-      <div className='flex min-h-[calc(100vh-9rem)] flex-col items-center justify-center p-4 sm:p-6 md:p-8'>
+      <div className='flex min-h-[calc(100vh-9rem)] flex-col items-center justify-center gap-6 p-4 sm:p-6 md:p-8'>
+        <h1 className='text-4xl font-bold'>No properties found</h1>
         <Button asChild>
           <Link href='/properties/create'>Add a property</Link>
         </Button>

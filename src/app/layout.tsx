@@ -6,7 +6,6 @@ import { type Metadata } from 'next';
 import { TRPCReactProvider } from '@/trpc/react';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from '@/components/ui/theme-provider';
-import { SessionProvider } from 'next-auth/react';
 
 export const metadata: Metadata = {
   title: 'RealtyComps',
@@ -30,10 +29,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SessionProvider>
-            <TRPCReactProvider>{children}</TRPCReactProvider>
-            <Toaster richColors />
-          </SessionProvider>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <Toaster richColors />
         </ThemeProvider>
       </body>
     </html>

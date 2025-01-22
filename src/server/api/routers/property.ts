@@ -14,11 +14,16 @@ export const propertyRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      console.log(ctx.user);
       const address = `${input.streetAddress}, ${input.city}, ${input.state}, ${input.postalCode}`;
       const [propertyDetails, imageUrl] = await Promise.all([
         getRentCastPropertyDetails(address),
         getStreetViewImage(address),
       ]);
+
+      if (!propertyDetails) {
+        return null;
+      }
 
       const property = await ctx.db.property.create({
         data: {

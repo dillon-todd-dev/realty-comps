@@ -1,13 +1,26 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { Button } from '@/components/ui/button';
+import { authClient } from '@/lib/auth-client';
 import { redirect } from 'next/navigation';
 
 const DashboardPage = () => {
-  const { data: session } = useSession();
-  if (!session) redirect('/auth/login');
+  const handleSignOut = async (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          redirect('/auth/login');
+        },
+      },
+    });
+  };
 
-  return <div>DashboardPage</div>;
+  return (
+    <div>
+      <Button onClick={handleSignOut}>Sign Out</Button>
+    </div>
+  );
 };
 
 export default DashboardPage;

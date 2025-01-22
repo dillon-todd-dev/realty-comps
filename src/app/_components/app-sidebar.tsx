@@ -1,6 +1,5 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -12,40 +11,35 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar";
-import ThemeToggle from "@/components/ui/theme-toggle";
-import { cn } from "@/lib/utils";
-import { CreditCard, Home, LayoutDashboard, Plus } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+} from '@/components/ui/sidebar';
+import { authClient } from '@/lib/auth-client';
+import { cn } from '@/lib/utils';
+import { Home, LayoutDashboard, Users } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { NavUser } from '@/app/_components/nav-user';
 
 const navItems = [
   {
-    title: "Dashboard",
-    url: "/dashboard",
+    title: 'Dashboard',
+    url: '/dashboard',
     icon: LayoutDashboard,
   },
   {
-    title: "Properties",
-    url: "/properties",
+    title: 'Properties',
+    url: '/properties',
     icon: Home,
-  },
-  {
-    title: "Billing",
-    url: "/billing",
-    icon: CreditCard,
   },
 ];
 
-const AppSidebar = () => {
+export function AppSidebar() {
+  const { data: session } = authClient.useSession();
   const pathname = usePathname();
-  const { open } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon" variant="floating">
+    <Sidebar collapsible='icon' variant='floating'>
       <SidebarHeader>
-        <h1 className="text-xl font-bold text-primary/80">RealtyComps</h1>
+        <h1 className='text-xl font-bold text-primary/80'>RealtyComps</h1>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -58,7 +52,7 @@ const AppSidebar = () => {
                     <Link
                       href={item.url}
                       className={cn({
-                        "!bg-primary !text-white": pathname === item.url,
+                        '!bg-primary !text-white': pathname.includes(item.url),
                       })}
                     >
                       <item.icon />
@@ -67,15 +61,19 @@ const AppSidebar = () => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              <div className="h-2"></div>
-              {open && (
+              {session?.user.role === 'admin' && (
                 <SidebarMenuItem>
-                  <Link href="/properties/create">
-                    <Button size="sm" variant="outline" className="w-fit">
-                      <Plus />
-                      Add Property
-                    </Button>
-                  </Link>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      href='/users'
+                      className={cn({
+                        '!bg-primary !text-white': pathname.includes('/users'),
+                      })}
+                    >
+                      <Users />
+                      <span>Users</span>
+                    </Link>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
             </SidebarMenu>
@@ -83,10 +81,8 @@ const AppSidebar = () => {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <ThemeToggle />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   );
-};
-
-export default AppSidebar;
+}
