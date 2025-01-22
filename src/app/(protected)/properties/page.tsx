@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { PaginationWithLinks } from '@/components/ui/pagination-with-links';
 import { daysAgo } from '@/lib/utils';
 import { api } from '@/trpc/react';
-import { Prisma } from '@prisma/client';
+import { type Prisma } from '@prisma/client';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -82,7 +82,7 @@ const PropertiesPage = () => {
       </div>
       <div className='mt-10'>
         <PaginationWithLinks
-          totalCount={data?.totalProperties || 0}
+          totalCount={data?.totalProperties ?? 0}
           pageSize={PROPERTIES_PER_PAGE}
           page={currentPage}
         />

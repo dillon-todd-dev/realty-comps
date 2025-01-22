@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { type ReactNode, useCallback } from "react";
+import { type ReactNode, useCallback } from 'react';
 import {
   Pagination,
   PaginationContent,
@@ -9,9 +9,9 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/pagination';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 export type PaginationWithLinksProps = {
   pageSizeSelectOptions?: {
@@ -31,7 +31,6 @@ export function PaginationWithLinks({
   page,
   pageSearchParam,
 }: PaginationWithLinksProps) {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -39,24 +38,24 @@ export function PaginationWithLinks({
 
   const buildLink = useCallback(
     (newPage: number) => {
-      const key = pageSearchParam || "page";
+      const key = pageSearchParam ?? 'page';
       if (!searchParams) return `${pathname}?${key}=${newPage}`;
       const newSearchParams = new URLSearchParams(searchParams);
       newSearchParams.set(key, String(newPage));
       return `${pathname}?${newSearchParams.toString()}`;
     },
-    [searchParams, pathname],
+    [searchParams, pathname, pageSearchParam],
   );
 
-  const navToPageSize = useCallback(
-    (newPageSize: number) => {
-      const key = pageSizeSelectOptions?.pageSizeSearchParam || "pageSize";
-      const newSearchParams = new URLSearchParams(searchParams || undefined);
-      newSearchParams.set(key, String(newPageSize));
-      router.push(`${pathname}?${newSearchParams.toString()}`);
-    },
-    [searchParams, pathname],
-  );
+  // const navToPageSize = useCallback(
+  //   (newPageSize: number) => {
+  //     const key = pageSizeSelectOptions?.pageSizeSearchParam || 'pageSize';
+  //     const newSearchParams = new URLSearchParams(searchParams || undefined);
+  //     newSearchParams.set(key, String(newPageSize));
+  //     router.push(`${pathname}?${newSearchParams.toString()}`);
+  //   },
+  //   [searchParams, pathname],
+  // );
 
   const renderPageNumbers = () => {
     const items: ReactNode[] = [];
@@ -83,7 +82,7 @@ export function PaginationWithLinks({
 
       if (page > 3) {
         items.push(
-          <PaginationItem key="ellipsis-start">
+          <PaginationItem key='ellipsis-start'>
             <PaginationEllipsis />
           </PaginationItem>,
         );
@@ -104,7 +103,7 @@ export function PaginationWithLinks({
 
       if (page < totalPageCount - 2) {
         items.push(
-          <PaginationItem key="ellipsis-end">
+          <PaginationItem key='ellipsis-end'>
             <PaginationEllipsis />
           </PaginationItem>,
         );
@@ -126,16 +125,16 @@ export function PaginationWithLinks({
   };
 
   return (
-    <div className="flex w-full flex-col items-center gap-3 md:flex-row">
-      <Pagination className={cn({ "md:justify-end": pageSizeSelectOptions })}>
-        <PaginationContent className="max-sm:gap-0">
+    <div className='flex w-full flex-col items-center gap-3 md:flex-row'>
+      <Pagination className={cn({ 'md:justify-end': pageSizeSelectOptions })}>
+        <PaginationContent className='max-sm:gap-0'>
           <PaginationItem>
             <PaginationPrevious
               href={buildLink(Math.max(page - 1, 1))}
               aria-disabled={page === 1}
               tabIndex={page === 1 ? -1 : undefined}
               className={
-                page === 1 ? "pointer-events-none opacity-50" : undefined
+                page === 1 ? 'pointer-events-none opacity-50' : undefined
               }
             />
           </PaginationItem>
@@ -147,7 +146,7 @@ export function PaginationWithLinks({
               tabIndex={page === totalPageCount ? -1 : undefined}
               className={
                 page === totalPageCount
-                  ? "pointer-events-none opacity-50"
+                  ? 'pointer-events-none opacity-50'
                   : undefined
               }
             />

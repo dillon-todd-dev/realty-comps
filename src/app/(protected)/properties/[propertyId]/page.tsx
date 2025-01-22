@@ -33,17 +33,25 @@ const PropertyDetailPage = () => {
     propertyId: propertyId as string,
   });
 
+  if (!property) {
+    return (
+      <div className='flex min-h-[calc(100vh-1rem)] flex-col items-center justify-center gap-6 p-4 sm:p-6 md:p-8'>
+        <Loader2 className='size-10 animate-spin' />
+      </div>
+    );
+  }
+
   const createEvaluation = api.evaluation.createEvaluation.useMutation();
 
   const deleteEvaluation = api.evaluation.deleteEvaluation.useMutation();
 
   const handleCreateEvaluation = () => {
     createEvaluation.mutate(
-      { propertyId: property?.id! },
+      { propertyId: property.id },
       {
-        onSuccess: ({ id }) => {
+        onSuccess: async ({ id }) => {
           toast.success('Successfully created evaluation!');
-          utils.property.getPropertyById.invalidate({
+          await utils.property.getPropertyById.invalidate({
             propertyId: propertyId as string,
           });
           router.push(`/properties/${property?.id}/evaluations/${id}`);
@@ -59,8 +67,8 @@ const PropertyDetailPage = () => {
     deleteEvaluation.mutate(
       { evaluationId },
       {
-        onSuccess: () => {
-          utils.property.getPropertyById.invalidate({
+        onSuccess: async () => {
+          await utils.property.getPropertyById.invalidate({
             propertyId: propertyId as string,
           });
           toast.success('Successfully deleted evaluation');
@@ -75,7 +83,7 @@ const PropertyDetailPage = () => {
   return (
     <div className='min-h-screen p-4 sm:p-6 md:p-8'>
       <div className='mx-auto max-w-7xl'>
-        <PropertyDetails property={property!} />
+        <PropertyDetails property={property} />
 
         <Card className='mb-8 border-sidebar-border bg-sidebar'>
           <CardContent className='p-6'>

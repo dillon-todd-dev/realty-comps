@@ -44,35 +44,41 @@ type PropertyDetailsResponse = {
 export const getPropertyDetails = async (
   address: string,
 ): Promise<PropertyDetailsResponse | null> => {
-  const url = `${env.RENT_CAST_API_URL}/properties?address=${address}`;
+  const encodedAddress = encodeURIComponent(address);
+  const url = `${env.RENT_CAST_API_URL}/properties?address=${encodedAddress}`;
+  console.log('create property url', url);
 
   try {
     const { data } = await axios.get(url, {
       headers: {
-        Accept: 'application/json',
+        accept: 'application/json',
         'X-Api-Key': env.RENT_CAST_API_KEY,
       },
     });
+
+    if (data.length === 0) return null;
+    const property = data[0];
+
     return {
-      id: data.id,
-      bedrooms: data.bedrooms,
-      bathrooms: data.bathrooms,
-      squareFootage: data.squareFootage,
-      lotSize: data.lotSize,
-      yearBuilt: data.yearBuilt,
-      subdivision: data.subdivision,
-      legalDescription: data.legalDescription,
+      id: property.id,
+      bedrooms: property.bedrooms,
+      bathrooms: property.bathrooms,
+      squareFootage: property.squareFootage,
+      lotSize: property.lotSize,
+      yearBuilt: property.yearBuilt,
+      subdivision: property.subdivision,
+      legalDescription: property.legalDescription,
       address: {
-        street: data.addressLine1,
-        city: data.city,
-        state: data.state,
-        postalCode: data.zipCode,
-        county: data.county,
-        longitude: data.longitude,
-        latitude: data.latitude,
+        street: property.addressLine1,
+        city: property.city,
+        state: property.state,
+        postalCode: property.zipCode,
+        county: property.county,
+        longitude: property.longitude,
+        latitude: property.latitude,
       },
-      taxAssessments: Object.values(data.taxAssessments),
-      propertyTaxes: Object.values(data.propertyTaxes),
+      taxAssessments: Object.values(property.taxAssessments),
+      propertyTaxes: Object.values(property.propertyTaxes),
     };
   } catch (error) {
     console.log('error getting property data', error);
@@ -80,21 +86,21 @@ export const getPropertyDetails = async (
   }
 };
 
-export const getListingDetails = async (rentCastId: string) => {
-  const url = `${env.RENT_CAST_API_URL}/listings/sale/${rentCastId}}`;
+// export const getListingDetails = async (rentCastId: string) => {
+//   const url = `${env.RENT_CAST_API_URL}/listings/sale/${rentCastId}}`;
 
-  try {
-    const { data } = await axios.get(url, {
-      headers: {
-        Accept: 'application/json',
-        'X-Api-Key': env.RENT_CAST_API_KEY,
-      },
-    });
-  } catch (error) {
-    console.error('error getting listing details', error);
-    return null;
-  }
-};
+//   try {
+//     const { data } = await axios.get(url, {
+//       headers: {
+//         Accept: 'application/json',
+//         'X-Api-Key': env.RENT_CAST_API_KEY,
+//       },
+//     });
+//   } catch (error) {
+//     console.error('error getting listing details', error);
+//     return null;
+//   }
+// };
 
 export const getSaleComparables = async ({
   longitude,

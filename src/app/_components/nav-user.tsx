@@ -1,13 +1,5 @@
 'use client';
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { BadgeCheck, ChevronsUpDown, LogOut } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +13,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from '@/components/ui/sidebar';
 import { authClient } from '@/lib/auth-client';
 import { redirect } from 'next/navigation';
@@ -29,7 +20,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 export function NavUser() {
   const { data: session, isPending } = authClient.useSession();
   if (!isPending && !session) redirect('auth/login');
-  const { isMobile } = useSidebar();
 
   if (isPending) {
     return (

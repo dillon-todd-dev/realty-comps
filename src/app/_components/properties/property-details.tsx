@@ -1,7 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Prisma } from '@prisma/client';
+import { type Prisma } from '@prisma/client';
 import { Bath, Bed, Ruler } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';

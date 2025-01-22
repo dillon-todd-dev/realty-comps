@@ -1,12 +1,34 @@
 import axios from 'axios';
 import { env } from '@/env';
 
-type AutocompleteResponse = {
-  predictions: {
-    description: string;
-    placeId: string;
+type PlacePrediction = {
+  place: string;
+  placeId: string;
+  text: {
+    text: string;
+    matches: {
+      offset: number;
+    }[];
+  };
+};
+
+type QueryPrediction = {
+  text: {
+    text: string;
+    matches: {
+      offset: number;
+    }[];
+  };
+};
+
+type AutocompleteSuggestions = {
+  suggestions: {
+    placePrediction: PlacePrediction[];
+    queryPrediction: QueryPrediction[];
   }[];
 };
+
+type AutocompleteResponse = {};
 
 type PlaceDetailsResponse = {
   street: string;
@@ -32,7 +54,7 @@ export const getAutocompleteSuggestions = async (
   ];
 
   try {
-    const { data } = await axios.post(
+    const { data }: { data: AutocompleteSuggestions } = await axios.post(
       url,
       {
         input: searchInput,

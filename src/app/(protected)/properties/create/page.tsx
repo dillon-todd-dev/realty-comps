@@ -2,11 +2,9 @@
 
 import AutocompleteInput from '@/app/_components/autocomplete-input';
 import { SubmitButton } from '@/app/_components/submit-button';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import useDebounce from '@/hooks/use-debounce';
 import { api } from '@/trpc/react';
-import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -46,18 +44,18 @@ const CreatePropertyPage = () => {
       setValue('state', placeDetails.state);
       setValue('postalCode', placeDetails.postalCode);
     }
-  }, [placeDetails]);
+  }, [placeDetails, setValue]);
 
   const onSubmit = (data: FormInput) => {
     createProperty.mutate(data, {
-      onSuccess: (property) => {
+      onSuccess: async (property) => {
         if (!property) {
           toast.error('Failed to add property');
           reset();
           return;
         }
 
-        utils.property.getProperties.invalidate();
+        await utils.property.getProperties.invalidate();
         toast.success('Property added successfully');
         reset();
         router.push('/properties');

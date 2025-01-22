@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { api } from '@/trpc/react';
-import { Evaluation } from '@prisma/client';
+import { type Evaluation } from '@prisma/client';
 import { Loader2 } from 'lucide-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -55,7 +55,7 @@ const DealTerms = ({ evaluation }: Props) => {
         miscellaneous: Number(evaluation.miscellaneous),
       });
     }
-  }, [evaluation, dealTermsForm.reset]);
+  }, [evaluation, dealTermsForm]);
 
   const handleDealTermsSubmit = (dealTermsData: DealTermsFormData) => {
     updateDealTerms.mutate(
@@ -79,9 +79,9 @@ const DealTerms = ({ evaluation }: Props) => {
         evaluationId: evaluation.id,
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           toast.success('Successfully updated deal terms');
-          utils.evaluation.getEvaluationById.invalidate({
+          await utils.evaluation.getEvaluationById.invalidate({
             evaluationId: evaluation.id,
           });
         },

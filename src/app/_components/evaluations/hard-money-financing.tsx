@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { formatDollarAmount } from '@/lib/utils';
 import { api } from '@/trpc/react';
-import { Evaluation } from '@prisma/client';
+import { type Evaluation } from '@prisma/client';
 import { ChevronDown, Loader2 } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
@@ -92,7 +92,7 @@ const HardMoneyFinancing = ({
         refiMortgageInsurance: Number(evaluation.refiMortgageInsurance),
       });
     }
-  }, [evaluation, hardMoneyFinancingForm.reset]);
+  }, [evaluation, hardMoneyFinancingForm]);
 
   const handleHardMoneySubmit = (
     hardMoneyFinancingData: HardMoneyFinancingFormData,
@@ -122,9 +122,9 @@ const HardMoneyFinancing = ({
         evaluationId: evaluation.id,
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           toast.success('Successfully updated hard money financing terms');
-          utils.evaluation.getEvaluationById.invalidate({
+          await utils.evaluation.getEvaluationById.invalidate({
             evaluationId: evaluation.id,
           });
         },

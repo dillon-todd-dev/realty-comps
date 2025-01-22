@@ -21,7 +21,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/form';
 import { SubmitButton } from '@/app/_components/submit-button';
@@ -52,11 +52,11 @@ export function CreateUserDialog() {
         role: 'user',
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           toast.success('User created successfully');
           form.reset();
           setDialogOpen(false);
-          utils.user.getUsers.invalidate();
+          await utils.user.getUsers.invalidate();
         },
         onError: () => {
           toast.error('Failed to create user');
