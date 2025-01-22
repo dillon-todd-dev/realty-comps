@@ -78,6 +78,6 @@ export const getPlaceDetails = async (placeId: string) => {
 
 export const getStreetViewImage = async (address: string) => {
   const encodedAddress = encodeURIComponent(address);
-  const url = `https://maps.googleapis.com/maps/api/streetview?location=${encodedAddress}&size=600x600&key=${env.GOOGLE_PLACES_API_KEY}`;
+  const url = `https://maps.googleapis.com/maps/api/streetview?location=${encodedAddress}&size=600x600&key=${env.GOOGLE_API_KEY}`;
   return url;
 };
