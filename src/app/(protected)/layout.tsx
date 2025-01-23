@@ -24,10 +24,10 @@ const ProtectedLayout = ({ children }: Props) => {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <main className='m-2 w-full'>
+        <main className='w-full p-2'>
           <header className='flex items-center gap-2 rounded-md border border-sidebar-border bg-sidebar p-2 px-4 shadow transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12'>
             <div className='flex items-center gap-2 px-4'>
-              <SidebarTrigger className='-ml-1' />
+              <SidebarTrigger className='-ml-4' />
               <Separator orientation='vertical' className='mr-2 h-4' />
               <Breadcrumb>
                 <BreadcrumbList>
