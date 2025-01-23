@@ -7,6 +7,7 @@ export function SubmitButton({
 }: {
   text: string;
   isLoading: boolean;
+  onClick?: () => void;
 }) {
   return (
     <Button className='w-full' type='submit' disabled={isLoading}>

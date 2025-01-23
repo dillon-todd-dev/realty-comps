@@ -1,15 +1,7 @@
 import { PropertiesGrid } from './properties-grid';
 import { api, HydrateClient } from '@/trpc/server';
 import { Suspense } from 'react';
-import { Loader2 } from 'lucide-react';
-
-const SuspenseFallback = () => {
-  return (
-    <div className='flex h-screen items-center justify-center'>
-      <Loader2 className='size-10 animate-spin' />
-    </div>
-  );
-};
+import { SuspenseFallback } from '@/app/_components/suspense-fallback';
 
 const PROPERTIES_PER_PAGE = 6;
 
