@@ -80,7 +80,10 @@ export const propertyRouter = createTRPCRouter({
         ctx.db.property.count(),
       ]);
 
-      return { properties, totalProperties };
+      return {
+        properties: properties ?? [],
+        totalProperties: totalProperties ?? 0,
+      };
     }),
   getPropertyById: protectedProcedure
     .input(z.object({ propertyId: z.string() }))

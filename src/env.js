@@ -14,7 +14,6 @@ export const env = createEnv({
     GOOGLE_API_KEY: z.string(),
     RENT_CAST_API_KEY: z.string(),
     RENT_CAST_API_URL: z.string(),
-    BETTER_AUTH_URL: z.string(),
   },
 
   /**
@@ -24,6 +23,7 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_BETTER_AUTH_URL: z.string(),
   },
 
   /**
@@ -36,8 +36,7 @@ export const env = createEnv({
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
     RENT_CAST_API_KEY: process.env.RENT_CAST_API_KEY,
     RENT_CAST_API_URL: process.env.RENT_CAST_API_URL,
-    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
-    // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+    NEXT_PUBLIC_BETTER_AUTH_URL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
