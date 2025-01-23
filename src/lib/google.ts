@@ -55,6 +55,8 @@ export const getAutocompleteSuggestions = async (
     'landmark',
   ];
 
+  console.log('autocomplete api key', env.GOOGLE_API_KEY);
+
   try {
     const { data }: { data: AutocompleteSuggestions } = await axios.post(
       url,
@@ -149,5 +151,3 @@ export const getStreetViewImage = async (
     return null;
   }
 };
-
-await getStreetViewImage('17375 Merigold Heights Drive, Conroe, TX 77302');
