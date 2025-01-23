@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/sidebar';
 import { authClient } from '@/lib/auth-client';
 import { cn } from '@/lib/utils';
-import { Home, LayoutDashboard, Users } from 'lucide-react';
+import { AppWindow, Home, LayoutDashboard, Users } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { NavUser } from '@/app/_components/nav-user';
@@ -37,9 +37,12 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible='icon' variant='floating'>
+    <Sidebar variant='floating'>
       <SidebarHeader>
-        <h1 className='text-xl font-bold text-primary/80'>RealtyComps</h1>
+        <div className='flex items-center gap-1'>
+          <AppWindow className='size-6' />
+          <span className='text-xl font-bold text-primary/80'>RealtyComps</span>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
