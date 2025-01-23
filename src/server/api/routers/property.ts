@@ -35,7 +35,7 @@ export const propertyRouter = createTRPCRouter({
           yearBuilt: propertyDetails.yearBuilt,
           subdivision: propertyDetails.subdivision,
           legalDescription: propertyDetails.legalDescription,
-          imageUrl: imageUrl?.url,
+          imageUrl: imageUrl ?? null,
           user: {
             connect: {
               id: ctx.user.id,
