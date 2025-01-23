@@ -7,10 +7,11 @@ import { SuspenseFallback } from '@/app/_components/suspense-fallback';
 export default async function PropertyDetailPage({
   params,
 }: {
-  params: { propertyId: string };
+  params: Promise<{ propertyId: string }>;
 }) {
+  const { propertyId } = await params;
   void api.property.getPropertyById.prefetch({
-    propertyId: params.propertyId,
+    propertyId: propertyId,
   });
 
   return (
@@ -18,7 +19,7 @@ export default async function PropertyDetailPage({
       <div className='min-h-screen p-4 sm:p-6 md:p-8'>
         <div className='mx-auto max-w-7xl'>
           <Suspense fallback={<SuspenseFallback />}>
-            <PropertyDetails propertyId={params.propertyId} />
+            <PropertyDetails propertyId={propertyId} />
           </Suspense>
         </div>
       </div>
