@@ -55,7 +55,8 @@ export const getAutocompleteSuggestions = async (
     'landmark',
   ];
 
-  console.log('autocomplete api key', env.GOOGLE_API_KEY);
+  console.warn('autocomplete url', url);
+  console.warn('autocomplete input', searchInput);
 
   try {
     const { data }: { data: AutocompleteSuggestions } = await axios.post(
@@ -81,7 +82,15 @@ export const getAutocompleteSuggestions = async (
       };
     });
   } catch (error) {
-    console.error('Failed to get autocomplete suggestions:', error);
+    if (axios.isAxiosError(error)) {
+      console.error('Axios error details:');
+      console.error('Message:', error.message);
+      console.error('Status Code:', error.response?.status);
+      console.error('Response Data:', error.response?.data);
+      console.error('Request Config:', error.config);
+    } else {
+      console.error('Failed to get autocomplete suggestions:', error);
+    }
     return null;
   }
 };
