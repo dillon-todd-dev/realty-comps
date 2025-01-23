@@ -12,25 +12,26 @@ type PlacePrediction = {
   };
 };
 
-type QueryPrediction = {
-  text: {
-    text: string;
-    matches: {
-      offset: number;
-    }[];
-  };
-};
-
 type AutocompleteSuggestions = {
   suggestions: {
-    placePrediction: PlacePrediction[];
-    queryPrediction: QueryPrediction[];
+    placePrediction: PlacePrediction;
   }[];
 };
 
 type AutocompleteResponse = {
   value: string;
   label: string;
+};
+
+type AddressComponent = {
+  longText: string;
+  shortText: string;
+  types: string[];
+  languageCode: string;
+};
+
+type PlaceDetails = {
+  addressComponents: AddressComponent[];
 };
 
 type PlaceDetailsResponse = {
@@ -40,9 +41,7 @@ type PlaceDetailsResponse = {
   postalCode: string;
 };
 
-type StreetViewImageResponse = {
-  url: string;
-};
+type StreetViewImageResponse = string;
 
 export const getAutocompleteSuggestions = async (
   searchInput: string,
@@ -71,13 +70,12 @@ export const getAutocompleteSuggestions = async (
         },
       },
     );
-
     if (data.suggestions.length === 0) return null;
 
     return data.suggestions.map((suggestion) => {
       return {
-        value: suggestion.placePrediction[0]?.placeId ?? '',
-        label: suggestion.placePrediction[0]?.text.text ?? '',
+        value: suggestion.placePrediction.placeId,
+        label: suggestion.placePrediction.text.text,
       };
     });
   } catch (error) {
@@ -92,7 +90,7 @@ export const getPlaceDetails = async (
   const url = `https://places.googleapis.com/v1/places/${placeId}`;
 
   try {
-    const { data } = await axios.get(url, {
+    const { data }: { data: PlaceDetails } = await axios.get(url, {
       headers: {
         'X-Goog-Api-Key': env.GOOGLE_API_KEY,
         'X-Goog-FieldMask': 'addressComponents,photos',
@@ -102,7 +100,7 @@ export const getPlaceDetails = async (
 
     const findAddressPart = (str: string) => {
       const addressPart = data.addressComponents.find(
-        (addressComponent: any) => {
+        (addressComponent: AddressComponent) => {
           if (addressComponent.types.includes(str)) {
             return addressComponent;
           }
@@ -137,11 +135,13 @@ export const getStreetViewImage = async (
   const url = `https://maps.googleapis.com/maps/api/streetview?location=${encodedAddress}&size=600x600&key=${env.GOOGLE_API_KEY}`;
 
   try {
-    const { data } = await axios.get(url, {
+    const { data }: { data: string } = await axios.get(url, {
       headers: {
         'X-Goog-Api-Key': env.GOOGLE_API_KEY,
       },
     });
+
+    console.log(typeof data);
 
     return data;
   } catch (error) {
@@ -149,3 +149,5 @@ export const getStreetViewImage = async (
     return null;
   }
 };
+
+await getStreetViewImage('17375 Merigold Heights Drive, Conroe, TX 77302');

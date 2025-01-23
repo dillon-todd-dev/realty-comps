@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '../trpc';
-import { getSaleComparables } from '@/lib/rent-cast';
 
 export const evaluationRouter = createTRPCRouter({
   createEvaluation: protectedProcedure
@@ -113,83 +112,83 @@ export const evaluationRouter = createTRPCRouter({
         data: input.data,
       });
     }),
-  searchComparables: protectedProcedure
-    .input(
-      z.object({
-        data: z.object({
-          latitude: z.number(),
-          longitude: z.number(),
-          bedrooms: z.number(),
-          bathrooms: z.number(),
-          squareFootage: z.number(),
-          maxRadius: z.number(),
-          daysOld: z.number(),
-        }),
-        propertyId: z.string(),
-        evaluationId: z.string(),
-        type: z.enum(['SALE', 'RENT']),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const saleComparables = await getSaleComparables(input.data);
-      if (!saleComparables) return null;
+  // searchComparables: protectedProcedure
+  //   .input(
+  //     z.object({
+  //       data: z.object({
+  //         latitude: z.number(),
+  //         longitude: z.number(),
+  //         bedrooms: z.number(),
+  //         bathrooms: z.number(),
+  //         squareFootage: z.number(),
+  //         maxRadius: z.number(),
+  //         daysOld: z.number(),
+  //       }),
+  //       propertyId: z.string(),
+  //       evaluationId: z.string(),
+  //       type: z.enum(['SALE', 'RENT']),
+  //     }),
+  //   )
+  //   .query(async ({ ctx, input }) => {
+  //     const saleComparables = await getSaleComparables(input.data);
+  //     if (!saleComparables) return null;
 
-      await ctx.db.property.update({
-        where: { id: input.propertyId },
-        data: {
-          price: saleComparables.price,
-          priceRangeLow: saleComparables.priceRangeLow,
-          priceRangeHigh: saleComparables.priceRangeHigh,
-        },
-      });
+  //     await ctx.db.property.update({
+  //       where: { id: input.propertyId },
+  //       data: {
+  //         price: saleComparables.price,
+  //         priceRangeLow: saleComparables.priceRangeLow,
+  //         priceRangeHigh: saleComparables.priceRangeHigh,
+  //       },
+  //     });
 
-      const transaction = saleComparables.comparables.map((comparable: any) => {
-        ctx.db.comparable.create({
-          data: {
-            rentCastId: comparable.id,
-            bedrooms: comparable.bedrooms,
-            bathrooms: comparable.bathrooms,
-            squareFootage: comparable.squareFootage,
-            lotSize: comparable.lotSize,
-            yearBuilt: comparable.yearBuilt,
-            price: comparable.price,
-            listingType: comparable.listingType,
-            listedDate: comparable.listedDate,
-            removedDate: comparable.removedDate,
-            lastSeenDate: comparable.lastSeenDate,
-            daysOnMarket: comparable.daysOnMarket,
-            distance: comparable.distance,
-            daysOld: comparable.daysOld,
-            correlation: comparable.correlation,
-            address: {
-              connectOrCreate: {
-                where: {
-                  street: comparable.street,
-                },
-                create: {
-                  street: comparable.street,
-                  city: comparable.city,
-                  state: comparable.state,
-                  postalCode: comparable.zipCode,
-                  county: comparable.county,
-                  latitude: comparable.latitude,
-                  longitude: comparable.longitude,
-                },
-              },
-            },
-            evaluations: {
-              create: {
-                evaluation: {
-                  connect: { id: input.evaluationId },
-                },
-                type: input.type,
-              },
-            },
-          },
-        });
-      });
+  //     const transaction = saleComparables.comparables.map((comparable: any) => {
+  //       ctx.db.comparable.create({
+  //         data: {
+  //           rentCastId: comparable.id,
+  //           bedrooms: comparable.bedrooms,
+  //           bathrooms: comparable.bathrooms,
+  //           squareFootage: comparable.squareFootage,
+  //           lotSize: comparable.lotSize,
+  //           yearBuilt: comparable.yearBuilt,
+  //           price: comparable.price,
+  //           listingType: comparable.listingType,
+  //           listedDate: comparable.listedDate,
+  //           removedDate: comparable.removedDate,
+  //           lastSeenDate: comparable.lastSeenDate,
+  //           daysOnMarket: comparable.daysOnMarket,
+  //           distance: comparable.distance,
+  //           daysOld: comparable.daysOld,
+  //           correlation: comparable.correlation,
+  //           address: {
+  //             connectOrCreate: {
+  //               where: {
+  //                 street: comparable.street,
+  //               },
+  //               create: {
+  //                 street: comparable.street,
+  //                 city: comparable.city,
+  //                 state: comparable.state,
+  //                 postalCode: comparable.zipCode,
+  //                 county: comparable.county,
+  //                 latitude: comparable.latitude,
+  //                 longitude: comparable.longitude,
+  //               },
+  //             },
+  //           },
+  //           evaluations: {
+  //             create: {
+  //               evaluation: {
+  //                 connect: { id: input.evaluationId },
+  //               },
+  //               type: input.type,
+  //             },
+  //           },
+  //         },
+  //       });
+  //     });
 
-      const result = await ctx.db.$transaction(transaction);
-      console.log(result);
-    }),
+  //     const result = await ctx.db.$transaction(transaction);
+  //     console.log(result);
+  //   }),
 });

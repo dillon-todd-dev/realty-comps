@@ -245,8 +245,8 @@ model TaxAssessment {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt
 
-  year         Int
-  value        Decimal
+  year         Int?
+  value        Decimal?
   land         Decimal?
   improvements Decimal?
 
@@ -261,8 +261,8 @@ model PropertyTax {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  year  Int
-  total Decimal
+  year  Int?
+  total Decimal?
 
   propertyId String
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)

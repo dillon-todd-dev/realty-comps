@@ -12,7 +12,20 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-const properties: any[] = [];
+type Property = {
+  id: string;
+  address: string;
+  subdivision: string;
+  bedrooms: number;
+  bathrooms: number;
+  garage: boolean;
+  built: number;
+  sqft: number;
+  list: number;
+  sold: number;
+};
+
+const properties: Property[] = [];
 
 const SaleComparables = () => {
   return (
