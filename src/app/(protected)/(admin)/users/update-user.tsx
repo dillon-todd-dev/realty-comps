@@ -129,7 +129,9 @@ export function UpdateUser({ user }: { user: User }) {
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
-                        {...field}
+                        disabled={field.disabled}
+                        name={field.name}
+                        ref={field.ref}
                       />
                     </FormControl>
                   </FormItem>
@@ -145,7 +147,9 @@ export function UpdateUser({ user }: { user: User }) {
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
-                        {...field}
+                        disabled={field.disabled}
+                        name={field.name}
+                        ref={field.ref}
                       />
                     </FormControl>
                   </FormItem>

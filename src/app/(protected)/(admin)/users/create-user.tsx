@@ -150,7 +150,9 @@ export function CreateUserDialog() {
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
-                        {...field}
+                        disabled={field.disabled}
+                        name={field.name}
+                        ref={field.ref}
                       />
                     </FormControl>
                   </FormItem>
@@ -166,7 +168,9 @@ export function CreateUserDialog() {
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
-                        {...field}
+                        disabled={field.disabled}
+                        name={field.name}
+                        ref={field.ref}
                       />
                     </FormControl>
                   </FormItem>
