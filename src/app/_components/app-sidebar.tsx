@@ -14,7 +14,13 @@ import {
 } from '@/components/ui/sidebar';
 import { authClient } from '@/lib/auth-client';
 import { cn } from '@/lib/utils';
-import { AppWindow, Home, LayoutDashboard, Users } from 'lucide-react';
+import {
+  AppWindow,
+  FileUser,
+  Home,
+  LayoutDashboard,
+  Users,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { NavUser } from '@/app/_components/nav-user';
@@ -29,6 +35,19 @@ const navItems = [
     title: 'Properties',
     url: '/properties',
     icon: Home,
+  },
+];
+
+const adminNavItems = [
+  {
+    title: 'Users',
+    url: '/users',
+    icon: Users,
+  },
+  {
+    title: 'Investors',
+    url: '/investors',
+    icon: FileUser,
   },
 ];
 
@@ -64,24 +83,35 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              {session?.user.role === 'admin' && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      href='/users'
-                      className={cn({
-                        '!bg-primary !text-white': pathname.includes('/users'),
-                      })}
-                    >
-                      <Users />
-                      <span>Users</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        {session?.user.role === 'admin' && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Admin</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {adminNavItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        href={item.url}
+                        className={cn({
+                          '!bg-primary !text-white': pathname.includes(
+                            item.url,
+                          ),
+                        })}
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
