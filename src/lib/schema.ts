@@ -1,4 +1,4 @@
-import { object, string } from 'zod';
+import { boolean, object, string } from 'zod';
 
 const emailSchema = string({ required_error: 'Email is required' })
   .min(1, 'Email is required')
@@ -25,8 +25,20 @@ export const createUserSchema = object({
   ),
   email: emailSchema,
   password: passwordSchema.min(8, 'Password must be at least 8 characters'),
-  role: string({ required_error: 'Role is required' }).min(
+  isAdmin: boolean({ required_error: 'Is Admin is required' }),
+  isActive: boolean({ required_error: 'Is Active is required' }),
+});
+
+export const updateUserSchema = object({
+  firstName: string({ required_error: 'First Name is required' }).min(
     1,
-    'Role is required',
+    'First Name is required',
   ),
+  lastName: string({ required_error: 'Last Name is required' }).min(
+    1,
+    'Last Name is required',
+  ),
+  email: emailSchema,
+  isAdmin: boolean({ required_error: 'Is Admin is required' }),
+  isActive: boolean({ required_error: 'Is Active is required' }),
 });

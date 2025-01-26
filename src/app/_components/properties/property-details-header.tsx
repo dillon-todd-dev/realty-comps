@@ -9,7 +9,7 @@ type Props = {
   property: Prisma.PropertyGetPayload<{ include: { address: true } }>;
 };
 
-const PropertyDetails = ({ property }: Props) => {
+export default function PropertyDetailsHeader({ property }: Props) {
   return (
     <div className='mb-8 overflow-hidden rounded-lg shadow-md'>
       <div className='md:flex'>
@@ -56,6 +56,4 @@ const PropertyDetails = ({ property }: Props) => {
       </div>
     </div>
   );
-};
-
-export default PropertyDetails;
+}

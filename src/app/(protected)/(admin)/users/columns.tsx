@@ -1,5 +1,6 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,11 +12,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import type { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import { DeleteUser } from './delete-user';
+import { UpdateUser } from './update-user';
 
 export type User = {
+  id: string;
   name: string;
   email: string;
-  role: string;
+  isAdmin: boolean;
   isActive: boolean;
 };
 
@@ -41,10 +45,22 @@ export const columns: ColumnDef<User>[] = [
   {
     accessorKey: 'role',
     header: 'Role',
+    cell: ({ row }) => {
+      const isAdmin = row.original.isAdmin;
+      return <Badge variant='secondary'>{isAdmin ? 'Admin' : 'User'}</Badge>;
+    },
   },
   {
     accessorKey: 'isActive',
     header: 'Active',
+    cell: ({ row }) => {
+      const active = row.original.isActive;
+      return (
+        <Badge variant={active ? 'default' : 'destructive'}>
+          {active ? 'Active' : 'Inactive'}
+        </Badge>
+      );
+    },
   },
   {
     id: 'actions',
@@ -61,14 +77,8 @@ export const columns: ColumnDef<User>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.name)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <UpdateUser user={user} />
+            <DeleteUser userId={user.id} />
           </DropdownMenuContent>
         </DropdownMenu>
       );
