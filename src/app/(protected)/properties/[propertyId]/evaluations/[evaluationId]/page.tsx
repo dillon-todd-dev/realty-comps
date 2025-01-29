@@ -3,10 +3,10 @@
 import { notFound, useParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { api } from '@/trpc/react';
-import DealTerms from '@/app/_components/evaluations/deal-terms';
-import ConventionalFinancing from '@/app/_components/evaluations/conventional-financing';
-import HardMoneyFinancing from '@/app/_components/evaluations/hard-money-financing';
-import SaleComparables from '@/app/_components/evaluations/sale-comparables';
+import DealTerms from '@/app/(protected)/properties/[propertyId]/evaluations/[evaluationId]/(components)/deal-terms';
+import ConventionalFinancing from '@/app/(protected)/properties/[propertyId]/evaluations/[evaluationId]/(components)/conventional-financing';
+import HardMoneyFinancing from '@/app/(protected)/properties/[propertyId]/evaluations/[evaluationId]/(components)/hard-money-financing';
+import SaleComparables from '@/app/(protected)/properties/[propertyId]/evaluations/[evaluationId]/sale-comparables';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';

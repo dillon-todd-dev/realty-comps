@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { NavUser } from '@/app/_components/nav-user';
+import { NavUser } from '@/app/(protected)/(components)/nav-user';
 
 const navItems = [
   {

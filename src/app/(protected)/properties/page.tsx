@@ -1,7 +1,10 @@
-import { PropertiesGrid } from './properties-grid';
+import { PropertiesGrid } from './(components)/properties-grid';
 import { api, HydrateClient } from '@/trpc/server';
 import { Suspense } from 'react';
-import { SuspenseFallback } from '@/app/_components/suspense-fallback';
+import { SuspenseFallback } from '@/components/suspense-fallback';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 const PROPERTIES_PER_PAGE = 6;
 
@@ -10,6 +13,9 @@ export default async function PropertiesPage({
 }: {
   searchParams: Promise<{ page: string | undefined }>;
 }) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) redirect('/auth/login');
+
   const { page } = await searchParams;
   const currentPage = page ? parseInt(page) : 1;
   void api.property.getProperties.prefetch({

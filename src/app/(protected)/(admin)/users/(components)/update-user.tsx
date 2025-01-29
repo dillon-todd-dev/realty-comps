@@ -20,7 +20,7 @@ import { api } from '@/trpc/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
-import { SubmitButton } from '@/app/_components/submit-button';
+import { SubmitButton } from '@/components/submit-button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { updateUserSchema } from '@/lib/schema';

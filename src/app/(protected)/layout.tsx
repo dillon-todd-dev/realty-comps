@@ -4,7 +4,7 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import React from 'react';
-import { AppSidebar } from '@/app/_components/app-sidebar';
+import { AppSidebar } from '@/app/(protected)/(components)/app-sidebar';
 import { Separator } from '@/components/ui/separator';
 import {
   Breadcrumb,

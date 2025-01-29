@@ -1,7 +1,7 @@
 'use client';
 
-import PropertyDetailsHeader from '@/app/_components/properties/property-details-header';
-import { SubmitButton } from '@/app/_components/submit-button';
+import PropertyDetailsHeader from '@/app/(protected)/properties/[propertyId]/(components)/property-details-header';
+import { SubmitButton } from '@/components/submit-button';
 import {
   AlertDialog,
   AlertDialogAction,

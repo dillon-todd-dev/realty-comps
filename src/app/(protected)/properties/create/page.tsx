@@ -1,7 +1,7 @@
 'use client';
 
-import AutocompleteInput from '@/app/_components/autocomplete-input';
-import { SubmitButton } from '@/app/_components/submit-button';
+import AutocompleteInput from '@/app/(protected)/properties/create/(components)/autocomplete-input';
+import { SubmitButton } from '@/components/submit-button';
 import { Input } from '@/components/ui/input';
 import useDebounce from '@/hooks/use-debounce';
 import { api } from '@/trpc/react';

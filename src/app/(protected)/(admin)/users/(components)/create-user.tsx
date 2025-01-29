@@ -24,7 +24,7 @@ import { toast } from 'sonner';
 import type { z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/form';
-import { SubmitButton } from '@/app/_components/submit-button';
+import { SubmitButton } from '@/components/submit-button';
 import { useState } from 'react';
 import { api } from '@/trpc/react';
 import { Checkbox } from '@/components/ui/checkbox';

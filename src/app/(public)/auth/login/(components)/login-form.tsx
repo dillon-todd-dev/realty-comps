@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { SubmitButton } from '@/app/_components/submit-button';
+import { SubmitButton } from '@/components/submit-button';
 
 export function LoginForm() {
   const form = useForm<z.infer<typeof loginSchema>>({

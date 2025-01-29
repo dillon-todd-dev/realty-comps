@@ -1,4 +1,5 @@
 'use client';
+
 import { BadgeCheck, ChevronsUpDown, LogOut } from 'lucide-react';
 import {
   DropdownMenu,
@@ -17,6 +18,7 @@ import {
 import { authClient } from '@/lib/auth-client';
 import { redirect } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
+
 export function NavUser() {
   const { data: session, isPending } = authClient.useSession();
   if (!isPending && !session) redirect('auth/login');
