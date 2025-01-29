@@ -16,10 +16,12 @@ export default async function LoginPage() {
 
   return (
     <div className='flex h-screen w-full items-center justify-center px-10'>
-      <Card className='max-w-md'>
+      <Card className='w-full max-w-xl'>
         <CardHeader>
-          <CardTitle className='text-2xl'>Welcome Back!</CardTitle>
-          <CardDescription>Login to your account to continue</CardDescription>
+          <CardTitle className='text-center text-2xl'>Welcome Back!</CardTitle>
+          <CardDescription className='text-md text-center'>
+            Login to your account to continue
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <LoginForm />

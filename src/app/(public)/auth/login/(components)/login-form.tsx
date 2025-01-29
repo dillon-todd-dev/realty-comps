@@ -79,6 +79,10 @@ export function LoginForm() {
             </FormItem>
           )}
         />
+        <p className='text-xs text-muted-foreground'>
+          Access to RealtyComps is restricted to clients and/or customers of
+          JDees Investments, Inc.
+        </p>
         <SubmitButton text='Login' isLoading={form.formState.isSubmitting} />
       </form>
     </Form>
