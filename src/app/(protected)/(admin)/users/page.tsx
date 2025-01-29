@@ -1,8 +1,8 @@
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { columns } from './columns';
-import { DataTable } from './(components)/data-table';
+import { columns } from '@/app/(protected)/(admin)/users/(components)/columns';
+import { DataTable } from '@/app/(protected)/(admin)/users/(components)/data-table';
 import { api, HydrateClient } from '@/trpc/server';
 import { Suspense } from 'react';
 import { Loader2 } from 'lucide-react';
