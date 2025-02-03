@@ -26,9 +26,6 @@ export function PropertiesGrid({ page }: { page: number }) {
     return (
       <div className='flex min-h-[calc(100vh-9rem)] flex-col items-center justify-center gap-6 p-4 sm:p-6 md:p-8'>
         <h1 className='text-4xl font-bold'>No properties found</h1>
-        <Button asChild>
-          <Link href='/properties/create'>Add a property</Link>
-        </Button>
       </div>
     );
   }

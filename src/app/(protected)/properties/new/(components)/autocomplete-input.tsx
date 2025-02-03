@@ -93,7 +93,10 @@ const AutocompleteInput = <T extends string>({
               onFocus={() => setOpen(true)}
               onBlur={onInputBlur}
             >
-              <Input placeholder={placeholder} />
+              <Input
+                placeholder={placeholder}
+                className='bg-light-600 !important min-h-14 border border-gray-100 p-4 text-base font-semibold placeholder:font-normal placeholder:text-slate-500'
+              />
             </CommandPrimitive.Input>
           </PopoverAnchor>
           {!open && <CommandList aria-hidden='true' className='hidden' />}

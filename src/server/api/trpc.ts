@@ -12,6 +12,7 @@ import { ZodError } from 'zod';
 
 import { db } from '@/server/db';
 import { auth } from '@/lib/auth';
+import { getMongoDb } from '@/lib/mongo';
 
 /**
  * 1. CONTEXT
@@ -26,8 +27,10 @@ import { auth } from '@/lib/auth';
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  const mongo = await getMongoDb();
   return {
     db,
+    mongo,
     ...opts,
   };
 };
