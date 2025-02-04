@@ -72,9 +72,9 @@ export default function InvestorsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {investors?.map((investor: Document) => (
+            {investors?.map((investor: Document, index: number) => (
               <TableRow
-                key={investor._id}
+                key={index}
                 className='flex w-full items-center justify-around'
               >
                 <TableCell className='text-left'>{investor._id}</TableCell>
