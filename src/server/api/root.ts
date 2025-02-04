@@ -3,6 +3,7 @@ import { propertyRouter } from './routers/property';
 import { googlePlacesRouter } from './routers/google-places';
 import { evaluationRouter } from './routers/evaluation';
 import { userRouter } from './routers/user';
+import { investorRouter } from './routers/investors';
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   googlePlaces: googlePlacesRouter,
   evaluation: evaluationRouter,
   user: userRouter,
+  investor: investorRouter,
 });
 
 // export type definition of API

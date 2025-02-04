@@ -63,7 +63,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
+    <div className='p-1'>
       <div className='flex items-center justify-between py-4'>
         <Input
           placeholder='Filter emails...'
@@ -100,7 +100,6 @@ export function DataTable<TData, TValue>({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <CreateUserDialog />
         </div>
       </div>
       <div className='rounded-md border'>

@@ -1,11 +1,12 @@
 'use client';
 
-import AutocompleteInput from '@/app/(protected)/properties/create/(components)/autocomplete-input';
+import AutocompleteInput from '@/app/(protected)/properties/new/(components)/autocomplete-input';
 import { SubmitButton } from '@/components/submit-button';
 import { Input } from '@/components/ui/input';
 import useDebounce from '@/hooks/use-debounce';
+import { authClient } from '@/lib/auth-client';
 import { api } from '@/trpc/react';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -18,6 +19,9 @@ type FormInput = {
 };
 
 const CreatePropertyPage = () => {
+  const { data: session, isPending } = authClient.useSession();
+  if (!isPending && !session?.user) redirect('/auth/login');
+
   const utils = api.useUtils();
   const router = useRouter();
   const [placeQueryTrigger, setPlaceQueryTrigger] = useState(false);
