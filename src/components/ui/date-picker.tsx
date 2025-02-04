@@ -33,10 +33,16 @@ import { Popover, PopoverContent, PopoverTrigger } from './popover';
 interface DatePickerProps<T extends DateValue = DateValue>
   extends DatePickerStateOptions<T> {
   children?: React.ReactNode;
+  date: Date | undefined;
+  setDate: (date: Date | undefined) => void;
 }
-export function DatePicker({ children, ...props }: DatePickerProps) {
+export function DatePicker({
+  children,
+  date,
+  setDate,
+  ...props
+}: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<Date>();
   const state = useDatePickerState({
     shouldCloseOnSelect: true,
     ...props,
@@ -60,11 +66,7 @@ export function DatePicker({ children, ...props }: DatePickerProps) {
   return (
     <div>
       <Popover open={open} onOpenChange={setOpen}>
-        <div
-          {...(children ? groupProps : {})}
-          ref={ref}
-          className='inline-block'
-        >
+        <div {...groupProps} ref={ref} className='inline-block'>
           <PopoverTrigger asChild>
             <Button
               variant='outline'
