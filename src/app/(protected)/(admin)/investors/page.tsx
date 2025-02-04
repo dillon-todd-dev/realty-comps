@@ -29,7 +29,7 @@ export default function InvestorsPage() {
       toDate: toDate?.toISOString() ?? '',
     },
     {
-      enabled: fromDate !== undefined && toDate !== undefined,
+      enabled: false,
     },
   );
 
