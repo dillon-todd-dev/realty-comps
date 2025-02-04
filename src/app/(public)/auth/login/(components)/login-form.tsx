@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { SubmitButton } from '@/app/_components/submit-button';
+import { SubmitButton } from '@/components/submit-button';
 
 export function LoginForm() {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -79,6 +79,10 @@ export function LoginForm() {
             </FormItem>
           )}
         />
+        <p className='text-xs text-muted-foreground'>
+          Access to RealtyComps is restricted to clients and/or customers of
+          JDees Investments, Inc.
+        </p>
         <SubmitButton text='Login' isLoading={form.formState.isSubmitting} />
       </form>
     </Form>

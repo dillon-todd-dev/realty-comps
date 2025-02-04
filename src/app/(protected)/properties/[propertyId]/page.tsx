@@ -1,8 +1,8 @@
 import React, { Suspense } from 'react';
-import PropertyDetails from './property-details';
+import PropertyDetails from './(components)/property-details';
 import { HydrateClient } from '@/trpc/server';
 import { api } from '@/trpc/server';
-import { SuspenseFallback } from '@/app/_components/suspense-fallback';
+import { SuspenseFallback } from '@/components/suspense-fallback';
 
 export default async function PropertyDetailPage({
   params,
