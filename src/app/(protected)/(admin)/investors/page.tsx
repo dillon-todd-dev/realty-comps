@@ -12,6 +12,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { api } from '@/trpc/react';
+import { Document } from 'mongodb';
 import { useState } from 'react';
 
 export default function InvestorsPage() {
@@ -24,11 +25,11 @@ export default function InvestorsPage() {
     isLoading,
   } = api.investor.getInvestors.useQuery(
     {
-      fromDate: fromDate?.toISOString()!,
-      toDate: toDate?.toISOString()!,
+      fromDate: fromDate?.toISOString() ?? '',
+      toDate: toDate?.toISOString() ?? '',
     },
     {
-      enabled: false,
+      enabled: fromDate !== undefined && toDate !== undefined,
     },
   );
 
@@ -72,7 +73,7 @@ export default function InvestorsPage() {
           </TableHeader>
           <TableBody>
             {investors &&
-              investors.map((investor: any) => (
+              investors.map((investor: Document) => (
                 <TableRow
                   key={investor._id}
                   className='flex w-full items-center justify-around'

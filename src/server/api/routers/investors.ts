@@ -8,7 +8,6 @@ export const investorRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { fromDate, toDate } = input;
       const collection = ctx.mongo.collection('investors');
-
       try {
         const results = await collection
           .aggregate([
@@ -35,8 +34,6 @@ export const investorRouter = createTRPCRouter({
           ])
           .limit(20)
           .toArray();
-
-        console.log(results);
 
         return results;
       } catch (err) {

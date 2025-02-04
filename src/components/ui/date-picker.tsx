@@ -61,7 +61,9 @@ export function DatePicker({
   );
 
   // Don't focus DateField on click
-  children && delete groupProps.onPointerDown;
+  if (children) {
+    delete groupProps.onPointerDown;
+  }
 
   return (
     <div>
