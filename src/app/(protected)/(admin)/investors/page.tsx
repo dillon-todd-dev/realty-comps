@@ -66,19 +66,22 @@ export default function InvestorsPage() {
       <div className='mt-7 w-full overflow-hidden'>
         <Table>
           <TableHeader>
-            <TableRow className='flex w-full items-center justify-around'>
-              <TableHead className='w-[100px]'>Investor</TableHead>
-              <TableHead># Properties</TableHead>
+            <TableRow className='flex'>
+              <TableHead className='flex-1 px-4 text-left'>Investor</TableHead>
+              <TableHead className='flex-1 px-4 text-right'>
+                # Properties
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {investors?.map((investor: Document, index: number) => (
-              <TableRow
-                key={index}
-                className='flex w-full items-center justify-around'
-              >
-                <TableCell className='text-left'>{investor._id}</TableCell>
-                <TableCell className='text-right'>{investor.count}</TableCell>
+              <TableRow key={index} className='flex'>
+                <TableCell className='flex-1 px-4 text-left'>
+                  {investor._id}
+                </TableCell>
+                <TableCell className='flex-1 px-4 text-right'>
+                  {investor.count}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
