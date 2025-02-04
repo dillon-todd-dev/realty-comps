@@ -72,16 +72,15 @@ export default function InvestorsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {investors &&
-              investors.map((investor: Document) => (
-                <TableRow
-                  key={investor._id}
-                  className='flex w-full items-center justify-around'
-                >
-                  <TableCell className='text-left'>{investor._id}</TableCell>
-                  <TableCell className='text-right'>{investor.count}</TableCell>
-                </TableRow>
-              ))}
+            {investors?.map((investor: Document) => (
+              <TableRow
+                key={investor._id}
+                className='flex w-full items-center justify-around'
+              >
+                <TableCell className='text-left'>{investor._id}</TableCell>
+                <TableCell className='text-right'>{investor.count}</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>
