@@ -1,15 +1,19 @@
 import { z } from 'zod';
 import { adminProcedure, createTRPCRouter } from '../trpc';
 import { TRPCError } from '@trpc/server';
+import { Document } from 'mongodb';
 
 export const investorRouter = createTRPCRouter({
   getInvestors: adminProcedure
-    .input(z.object({ fromDate: z.string(), toDate: z.string() }))
+    .input(
+      z.object({ fromDate: z.string(), toDate: z.string(), page: z.number() }),
+    )
     .query(async ({ ctx, input }) => {
-      const { fromDate, toDate } = input;
+      const { fromDate, toDate, page } = input;
+      const pageSize = 20;
       const collection = ctx.mongo.collection('investors');
       try {
-        const results = await collection
+        const results: Document[] = await collection
           .aggregate([
             {
               $match: {
@@ -29,13 +33,29 @@ export const investorRouter = createTRPCRouter({
               },
             },
             {
-              $sort: { count: -1 },
+              $facet: {
+                data: [
+                  { $sort: { count: -1 } },
+                  { $skip: (page - 1) * pageSize },
+                  { $limit: pageSize },
+                ],
+                totalCount: [{ $count: 'count' }],
+              },
             },
           ])
-          .limit(20)
           .toArray();
 
-        return results;
+        if (!results || results.length === 0) {
+          return { investors: [], hasMore: false };
+        }
+
+        const investors = results[0]?.data;
+        const totalInvestors = results[0]?.totalCount[0]?.count ?? 0;
+
+        return {
+          investors,
+          hasMore: totalInvestors > page * pageSize,
+        };
       } catch (err) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
