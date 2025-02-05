@@ -29,7 +29,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { DropdownMenu } from '@/components/ui/dropdown-menu';
-import { CreateUserDialog } from './create-user';
 import { api } from '@/trpc/react';
 
 interface DataTableProps<TData, TValue> {
@@ -66,10 +65,10 @@ export function DataTable<TData, TValue>({
     <div className='p-1'>
       <div className='flex items-center justify-between py-4'>
         <Input
-          placeholder='Filter emails...'
-          value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
+          placeholder='Search name...'
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
-            table.getColumn('email')?.setFilterValue(event.target.value)
+            table.getColumn('name')?.setFilterValue(event.target.value)
           }
           className='max-w-sm'
         />
