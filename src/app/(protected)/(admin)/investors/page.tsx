@@ -35,18 +35,21 @@ export default function InvestorsPage() {
 
   const hasMorePages = data?.hasMore ?? false;
 
-  function handleSearch() {
+  async function handleSearch() {
     if (fromDate && toDate) {
       setPage(1);
-      refetch();
+      await refetch();
     }
   }
 
   useEffect(() => {
     if (fromDate && toDate) {
-      refetch();
+      const refetchInvestors = async () => {
+        await refetch();
+      };
+      refetchInvestors();
     }
-  }, [page, refetch]);
+  }, [page, refetch, fromDate, toDate]);
 
   return (
     <section className='w-full rounded-2xl bg-white p-8'>

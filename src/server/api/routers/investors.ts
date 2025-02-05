@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { adminProcedure, createTRPCRouter } from '../trpc';
 import { TRPCError } from '@trpc/server';
+import { Document } from 'mongodb';
 
 export const investorRouter = createTRPCRouter({
   getInvestors: adminProcedure
@@ -12,7 +13,7 @@ export const investorRouter = createTRPCRouter({
       const pageSize = 20;
       const collection = ctx.mongo.collection('investors');
       try {
-        const results = await collection
+        const results: Document[] = await collection
           .aggregate([
             {
               $match: {
