@@ -64,28 +64,36 @@ export default function InvestorsPage() {
         </div>
       </div>
       <div className='mt-7 w-full overflow-hidden'>
-        <Table>
-          <TableHeader>
-            <TableRow className='flex'>
-              <TableHead className='flex-1 px-4 text-left'>Investor</TableHead>
-              <TableHead className='flex-1 px-4 text-right'>
-                # Properties
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {investors?.map((investor: Document, index: number) => (
-              <TableRow key={index} className='flex'>
-                <TableCell className='flex-1 px-4 text-left'>
-                  {investor._id}
-                </TableCell>
-                <TableCell className='flex-1 px-4 text-right'>
-                  {investor.count}
-                </TableCell>
+        {investors ? (
+          <Table>
+            <TableHeader>
+              <TableRow className='flex'>
+                <TableHead className='flex-1 px-4 text-left'>
+                  Investor
+                </TableHead>
+                <TableHead className='flex-1 px-4 text-right'>
+                  # Properties
+                </TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {investors.map((investor: Document, index: number) => (
+                <TableRow key={index} className='flex'>
+                  <TableCell className='flex-1 px-4 text-left'>
+                    {investor._id}
+                  </TableCell>
+                  <TableCell className='flex-1 px-4 text-right'>
+                    {investor.count}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <div className='flex h-[calc(100vh-18rem)] items-center justify-center text-xl font-semibold'>
+            Enter date range
+          </div>
+        )}
       </div>
     </section>
   );
