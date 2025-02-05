@@ -20,6 +20,7 @@ export default function InvestorsPage() {
   const [fromDate, setFromDate] = useState<Date | undefined>(undefined);
   const [toDate, setToDate] = useState<Date | undefined>(undefined);
   const [page, setPage] = useState(1);
+  const [queryEnabled, setQueryEnabled] = useState(false);
 
   const { data, refetch, isLoading, isFetching } =
     api.investor.getInvestors.useQuery(
@@ -29,7 +30,7 @@ export default function InvestorsPage() {
         page,
       },
       {
-        enabled: false,
+        enabled: queryEnabled,
       },
     );
 
@@ -38,18 +39,19 @@ export default function InvestorsPage() {
   async function handleSearch() {
     if (fromDate && toDate) {
       setPage(1);
+      setQueryEnabled(true);
       await refetch();
     }
   }
 
   useEffect(() => {
-    if (fromDate && toDate) {
+    if (fromDate && toDate && queryEnabled) {
       const refetchInvestors = async () => {
         await refetch();
       };
       refetchInvestors();
     }
-  }, [page, refetch, fromDate, toDate]);
+  }, [page, refetch, fromDate, toDate, queryEnabled]);
 
   return (
     <section className='w-full rounded-2xl bg-white p-8'>
